@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -115,6 +116,40 @@ public final class PlacedBlockRepository implements AutoCloseable {
             return true;
         } catch (SQLException exception) {
             throw new IllegalStateException("Failed to remove placed block", exception);
+        }
+    }
+
+    /**
+     * Removes all tracked positions in one transaction.
+     */
+    public int untrackAll(Collection<BlockPosition> positions) {
+        requireOpen();
+        List<BlockPosition> trackedPositions = positions.stream()
+                .filter(placedBlocks::contains)
+                .distinct()
+                .toList();
+
+        if (trackedPositions.isEmpty()) {
+            return 0;
+        }
+
+        try {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(DELETE_BLOCK)) {
+                for (BlockPosition position : trackedPositions) {
+                    bind(statement, position);
+                    statement.addBatch();
+                }
+                statement.executeBatch();
+            }
+            connection.commit();
+            placedBlocks.removeAll(trackedPositions);
+            return trackedPositions.size();
+        } catch (SQLException exception) {
+            rollback();
+            throw new IllegalStateException("Failed to remove placed blocks", exception);
+        } finally {
+            restoreAutoCommit();
         }
     }
 

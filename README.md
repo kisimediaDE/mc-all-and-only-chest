@@ -73,7 +73,9 @@ The current milestone provides:
 - a working `/gui` placeholder command;
 - no item drops from naturally generated blocks;
 - normal drops from blocks placed by a player;
-- persistent placed-block tracking across server restarts.
+- persistent placed-block tracking across server restarts;
+- no block drops from entity or block explosions;
+- no mob drops except blaze rods and ender pearls.
 
 Pistons, falling blocks, explosions, and non-player block transformations are
 covered by later rule-specific milestones.
