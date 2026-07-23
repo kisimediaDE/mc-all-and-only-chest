@@ -86,6 +86,8 @@ The current milestone provides:
 - hopper extraction blocked for recognized structure containers;
 - an OP-only `/structurecomplete <category>` command for testing completion
   transitions without grinding random loot;
+- a confirmation-protected OP-only `/reset confirm` command that clears all
+  plugin progress and placed-block tracking without deleting the world;
 - an explicit mapping of all 55 Vanilla structure loot tables to those
   categories (the non-structure bonus chest is excluded);
 - no item drops from naturally generated blocks;

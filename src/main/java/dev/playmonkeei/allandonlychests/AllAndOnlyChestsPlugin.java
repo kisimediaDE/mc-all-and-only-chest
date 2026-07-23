@@ -2,6 +2,7 @@ package dev.playmonkeei.allandonlychests;
 
 import dev.playmonkeei.allandonlychests.challenge.StructureGoalCatalog;
 import dev.playmonkeei.allandonlychests.commands.StructureCompleteCommand;
+import dev.playmonkeei.allandonlychests.commands.ResetCommand;
 import dev.playmonkeei.allandonlychests.listeners.ChallengeBlockListener;
 import dev.playmonkeei.allandonlychests.listeners.ExplosionDropListener;
 import dev.playmonkeei.allandonlychests.listeners.MobDropListener;
@@ -86,6 +87,14 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
                 new StructureCompleteCommand(challengeStateRepository, structureGoalCatalog);
         getCommand("structurecomplete").setExecutor(structureCompleteCommand);
         getCommand("structurecomplete").setTabCompleter(structureCompleteCommand);
+
+        ResetCommand resetCommand = new ResetCommand(
+                challengeStateRepository,
+                placedBlockRepository,
+                getLogger()
+        );
+        getCommand("reset").setExecutor(resetCommand);
+        getCommand("reset").setTabCompleter(resetCommand);
 
         getLogger().info(
                 "All and Only Chests enabled with "

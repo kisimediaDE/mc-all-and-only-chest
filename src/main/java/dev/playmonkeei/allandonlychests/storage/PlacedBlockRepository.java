@@ -81,6 +81,21 @@ public final class PlacedBlockRepository implements AutoCloseable {
         return placedBlocks.contains(position);
     }
 
+    /**
+     * Deletes the complete placed-block index as part of a challenge reset.
+     */
+    public int reset() {
+        requireOpen();
+        int previousSize = placedBlocks.size();
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate("DELETE FROM placed_blocks");
+            placedBlocks.clear();
+            return previousSize;
+        } catch (SQLException exception) {
+            throw new IllegalStateException("Failed to reset placed blocks", exception);
+        }
+    }
+
     public void trackAll(Collection<BlockPosition> positions) {
         if (positions.isEmpty()) {
             return;

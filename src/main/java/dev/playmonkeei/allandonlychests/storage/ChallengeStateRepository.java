@@ -133,6 +133,32 @@ public final class ChallengeStateRepository implements AutoCloseable {
         return foundGoals.get(category).size();
     }
 
+    /**
+     * Deletes all structure selection and progress data without touching the
+     * world or the placed-block table.
+     */
+    public void resetProgress() {
+        requireOpen();
+        try {
+            connection.setAutoCommit(false);
+            try (Statement statement = connection.createStatement()) {
+                statement.executeUpdate("DELETE FROM found_structure_goals");
+                statement.executeUpdate("DELETE FROM completed_structures");
+                statement.executeUpdate("DELETE FROM challenge_state");
+            }
+            connection.commit();
+
+            activeStructure = null;
+            foundGoals.values().forEach(Set::clear);
+            completedStructures.clear();
+        } catch (SQLException exception) {
+            rollback();
+            throw new IllegalStateException("Failed to reset challenge progress", exception);
+        } finally {
+            restoreAutoCommit();
+        }
+    }
+
     public ProgressUpdate recordFoundGoals(
             StructureCategory category,
             Collection<StructureGoal> matchedGoals,

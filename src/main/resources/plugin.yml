@@ -14,6 +14,10 @@ commands:
     description: Markiert eine Struktur zu Testzwecken als abgeschlossen.
     usage: /structurecomplete <Kategorie>
     permission: allandonlychests.command.structurecomplete
+  reset:
+    description: Setzt nach Bestätigung alle Plugin-Fortschrittsdaten zurück.
+    usage: /reset confirm
+    permission: allandonlychests.command.reset
 
 permissions:
   allandonlychests.command.gui:
@@ -21,4 +25,7 @@ permissions:
     default: true
   allandonlychests.command.structurecomplete:
     description: Erlaubt das testweise Abschließen einer Struktur.
+    default: op
+  allandonlychests.command.reset:
+    description: Erlaubt das vollständige Zurücksetzen der Challenge-Daten.
     default: op
