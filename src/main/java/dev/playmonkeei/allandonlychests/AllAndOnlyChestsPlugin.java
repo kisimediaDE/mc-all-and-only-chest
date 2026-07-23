@@ -1,5 +1,6 @@
 package dev.playmonkeei.allandonlychests;
 
+import dev.playmonkeei.allandonlychests.challenge.StructureGoalCatalog;
 import dev.playmonkeei.allandonlychests.listeners.ChallengeBlockListener;
 import dev.playmonkeei.allandonlychests.listeners.ExplosionDropListener;
 import dev.playmonkeei.allandonlychests.listeners.MobDropListener;
@@ -22,6 +23,7 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
 
     private PlacedBlockRepository placedBlockRepository;
     private ChallengeStateRepository challengeStateRepository;
+    private StructureGoalCatalog structureGoalCatalog;
 
     @Override
     public void onEnable() {
@@ -30,6 +32,7 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
         challengeStateRepository = new ChallengeStateRepository(databasePath);
 
         try {
+            structureGoalCatalog = StructureGoalCatalog.load(this, getLogger());
             placedBlockRepository.open();
             challengeStateRepository.open();
         } catch (RuntimeException exception) {
@@ -58,7 +61,12 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
                 this
         );
         getServer().getPluginManager().registerEvents(
-                new StructureSelectionListener(challengeStateRepository, getLogger(), this),
+                new StructureSelectionListener(
+                        challengeStateRepository,
+                        structureGoalCatalog,
+                        getLogger(),
+                        this
+                ),
                 this
         );
 

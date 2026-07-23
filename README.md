@@ -75,6 +75,8 @@ The current milestone provides:
 
 - a `/gui` selection menu containing the 18 verified chest-bearing structure
   categories from Vanilla 26.2;
+- paginated structure details showing the unique obtainable item types from
+  the official Vanilla 26.2 loot tables;
 - persistent selection of the currently active structure;
 - an explicit mapping of all 55 Vanilla structure loot tables to those
   categories (the non-structure bonus chest is excluded);
