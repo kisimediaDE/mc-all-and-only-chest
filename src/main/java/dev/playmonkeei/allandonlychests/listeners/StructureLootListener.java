@@ -6,12 +6,14 @@ import dev.playmonkeei.allandonlychests.challenge.StructureGoalCatalog;
 import dev.playmonkeei.allandonlychests.storage.BlockPosition;
 import dev.playmonkeei.allandonlychests.storage.ChallengeStateRepository;
 import dev.playmonkeei.allandonlychests.storage.PlacedBlockRepository;
+import dev.playmonkeei.allandonlychests.ui.ChallengeSidebar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.BrewingStand;
 import org.bukkit.block.DecoratedPot;
@@ -19,6 +21,7 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.TileState;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -42,6 +45,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,6 +60,7 @@ public final class StructureLootListener implements Listener {
     private final ChallengeStateRepository stateRepository;
     private final PlacedBlockRepository placedBlockRepository;
     private final StructureGoalCatalog goalCatalog;
+    private final ChallengeSidebar sidebar;
     private final NamespacedKey structureCategoryKey;
     private final Logger logger;
 
@@ -64,12 +69,14 @@ public final class StructureLootListener implements Listener {
             ChallengeStateRepository stateRepository,
             PlacedBlockRepository placedBlockRepository,
             StructureGoalCatalog goalCatalog,
+            ChallengeSidebar sidebar,
             Logger logger
     ) {
         this.plugin = plugin;
         this.stateRepository = stateRepository;
         this.placedBlockRepository = placedBlockRepository;
         this.goalCatalog = goalCatalog;
+        this.sidebar = sidebar;
         this.logger = logger;
         structureCategoryKey = new NamespacedKey(plugin, "structure_category");
     }
@@ -119,8 +126,9 @@ public final class StructureLootListener implements Listener {
                 return;
             }
 
+            StructureCategory resolvedCategory = category.get();
             StructureCategory active = stateRepository.activeStructure().orElse(null);
-            if (active != category.get() || stateRepository.isCompleted(category.get())) {
+            if (active != resolvedCategory || stateRepository.isCompleted(resolvedCategory)) {
                 event.setCancelled(true);
                 player.sendMessage(
                         "§cDiese Kiste gehört nicht zu deiner aktuell erlaubten Struktur."
@@ -128,10 +136,14 @@ public final class StructureLootListener implements Listener {
                 return;
             }
 
+            sourceKey(holder).ifPresent(key ->
+                    stateRepository.recordVisitedSource(resolvedCategory, key)
+            );
             processItems(
-                    category.get(),
+                    resolvedCategory,
                     Arrays.asList(event.getInventory().getStorageContents())
             );
+            sidebar.refreshAll();
         } catch (RuntimeException exception) {
             event.setCancelled(true);
             player.sendMessage("§cDer Strukturfortschritt konnte nicht sicher gespeichert werden.");
@@ -154,7 +166,12 @@ public final class StructureLootListener implements Listener {
         }
 
         try {
+            stateRepository.recordVisitedSource(
+                    StructureCategory.TRIAL_CHAMBERS,
+                    sourceKey(event.getBlock())
+            );
             processItems(StructureCategory.TRIAL_CHAMBERS, event.getDispensedLoot());
+            sidebar.refreshAll();
         } catch (RuntimeException exception) {
             event.setCancelled(true);
             logger.log(Level.SEVERE, "Could not process dispensed Trial Chambers loot", exception);
@@ -334,5 +351,34 @@ public final class StructureLootListener implements Listener {
             return placedBlockRepository.isTracked(BlockPosition.from(blockState.getBlock()));
         }
         return false;
+    }
+
+    private Optional<String> sourceKey(InventoryHolder holder) {
+        if (holder instanceof DoubleChest doubleChest) {
+            List<String> halves = Stream.of(
+                            sourceKey(doubleChest.getLeftSide()),
+                            sourceKey(doubleChest.getRightSide())
+                    )
+                    .flatMap(Optional::stream)
+                    .sorted()
+                    .toList();
+            return halves.isEmpty()
+                    ? Optional.empty()
+                    : Optional.of("double:" + String.join("+", halves));
+        }
+        if (holder instanceof BlockState blockState) {
+            return Optional.of(sourceKey(blockState.getBlock()));
+        }
+        if (holder instanceof Entity entity) {
+            return Optional.of("entity:" + entity.getUniqueId());
+        }
+        return Optional.empty();
+    }
+
+    private String sourceKey(Block block) {
+        return "block:" + block.getWorld().getUID()
+                + ":" + block.getX()
+                + ":" + block.getY()
+                + ":" + block.getZ();
     }
 }

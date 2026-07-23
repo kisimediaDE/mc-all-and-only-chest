@@ -79,6 +79,8 @@ The current milestone provides:
   the official Vanilla 26.2 loot tables;
 - persistent selection of the currently active structure;
 - persistent item progress and completed-structure state;
+- a persistent sidebar for the active structure with item progress and a
+  counter for uniquely visited loot sources, toggleable with `/chesthud`;
 - structure-container access restricted to the active category;
 - Trial Chamber Vault and Trial Spawner rewards handled as legal structure
   loot, including the original plugin's potion, tipped-arrow, and enchanted

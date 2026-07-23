@@ -5,6 +5,7 @@ import dev.playmonkeei.allandonlychests.challenge.StructureGoalCatalog;
 import dev.playmonkeei.allandonlychests.gui.StructureDetailMenu;
 import dev.playmonkeei.allandonlychests.gui.StructureSelectionMenu;
 import dev.playmonkeei.allandonlychests.storage.ChallengeStateRepository;
+import dev.playmonkeei.allandonlychests.ui.ChallengeSidebar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,15 +28,18 @@ public final class StructureSelectionListener implements Listener {
     private final Logger logger;
     private final Plugin plugin;
     private final StructureGoalCatalog goalCatalog;
+    private final ChallengeSidebar sidebar;
 
     public StructureSelectionListener(
             ChallengeStateRepository stateRepository,
             StructureGoalCatalog goalCatalog,
+            ChallengeSidebar sidebar,
             Logger logger,
             Plugin plugin
     ) {
         this.stateRepository = stateRepository;
         this.goalCatalog = goalCatalog;
+        this.sidebar = sidebar;
         this.logger = logger;
         this.plugin = plugin;
     }
@@ -122,6 +126,7 @@ public final class StructureSelectionListener implements Listener {
         try {
             ChallengeStateRepository.SelectionResult result =
                     stateRepository.selectStructure(menu.category());
+            sidebar.refreshAll();
             switch (result) {
                 case SELECTED -> player.sendMessage(
                         "§aAktive Struktur: §f" + menu.category().displayName()

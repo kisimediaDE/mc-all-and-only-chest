@@ -4,6 +4,7 @@ import dev.playmonkeei.allandonlychests.challenge.StructureCategory;
 import dev.playmonkeei.allandonlychests.challenge.StructureGoal;
 import dev.playmonkeei.allandonlychests.challenge.StructureGoalCatalog;
 import dev.playmonkeei.allandonlychests.storage.ChallengeStateRepository;
+import dev.playmonkeei.allandonlychests.ui.ChallengeSidebar;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,13 +25,16 @@ public final class StructureCompleteCommand implements CommandExecutor, TabCompl
 
     private final ChallengeStateRepository stateRepository;
     private final StructureGoalCatalog goalCatalog;
+    private final ChallengeSidebar sidebar;
 
     public StructureCompleteCommand(
             ChallengeStateRepository stateRepository,
-            StructureGoalCatalog goalCatalog
+            StructureGoalCatalog goalCatalog,
+            ChallengeSidebar sidebar
     ) {
         this.stateRepository = stateRepository;
         this.goalCatalog = goalCatalog;
+        this.sidebar = sidebar;
     }
 
     @Override
@@ -63,6 +67,7 @@ public final class StructureCompleteCommand implements CommandExecutor, TabCompl
         List<StructureGoal> allGoals = goalCatalog.goalsFor(category);
         ChallengeStateRepository.ProgressUpdate update =
                 stateRepository.recordFoundGoals(category, allGoals, allGoals);
+        sidebar.refreshAll();
 
         sender.sendMessage(
                 "§aTestabschluss gesetzt: §f" + category.displayName()

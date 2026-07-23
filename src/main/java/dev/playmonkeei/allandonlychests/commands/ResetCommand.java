@@ -2,6 +2,7 @@ package dev.playmonkeei.allandonlychests.commands;
 
 import dev.playmonkeei.allandonlychests.storage.ChallengeStateRepository;
 import dev.playmonkeei.allandonlychests.storage.PlacedBlockRepository;
+import dev.playmonkeei.allandonlychests.ui.ChallengeSidebar;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,14 +24,17 @@ public final class ResetCommand implements CommandExecutor, TabCompleter {
     private final ChallengeStateRepository stateRepository;
     private final PlacedBlockRepository placedBlockRepository;
     private final Logger logger;
+    private final ChallengeSidebar sidebar;
 
     public ResetCommand(
             ChallengeStateRepository stateRepository,
             PlacedBlockRepository placedBlockRepository,
+            ChallengeSidebar sidebar,
             Logger logger
     ) {
         this.stateRepository = stateRepository;
         this.placedBlockRepository = placedBlockRepository;
+        this.sidebar = sidebar;
         this.logger = logger;
     }
 
@@ -59,6 +63,7 @@ public final class ResetCommand implements CommandExecutor, TabCompleter {
         try {
             int removedBlocks = placedBlockRepository.reset();
             stateRepository.resetProgress();
+            sidebar.refreshAll();
             if (sender instanceof Player player) {
                 player.closeInventory();
             }

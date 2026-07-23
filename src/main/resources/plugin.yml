@@ -18,6 +18,10 @@ commands:
     description: Setzt nach Bestätigung alle Plugin-Fortschrittsdaten zurück.
     usage: /reset confirm
     permission: allandonlychests.command.reset
+  chesthud:
+    description: Blendet die Challenge-Anzeige ein oder aus.
+    usage: /chesthud
+    permission: allandonlychests.command.chesthud
 
 permissions:
   allandonlychests.command.gui:
@@ -29,3 +33,6 @@ permissions:
   allandonlychests.command.reset:
     description: Erlaubt das vollständige Zurücksetzen der Challenge-Daten.
     default: op
+  allandonlychests.command.chesthud:
+    description: Erlaubt das Umschalten der Challenge-Anzeige.
+    default: true

@@ -12,6 +12,7 @@ import dev.playmonkeei.allandonlychests.listeners.StructureLootListener;
 import dev.playmonkeei.allandonlychests.gui.StructureSelectionMenu;
 import dev.playmonkeei.allandonlychests.storage.ChallengeStateRepository;
 import dev.playmonkeei.allandonlychests.storage.PlacedBlockRepository;
+import dev.playmonkeei.allandonlychests.ui.ChallengeSidebar;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -27,6 +28,7 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
     private PlacedBlockRepository placedBlockRepository;
     private ChallengeStateRepository challengeStateRepository;
     private StructureGoalCatalog structureGoalCatalog;
+    private ChallengeSidebar challengeSidebar;
 
     @Override
     public void onEnable() {
@@ -38,6 +40,10 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
             structureGoalCatalog = StructureGoalCatalog.load(this, getLogger());
             placedBlockRepository.open();
             challengeStateRepository.open();
+            challengeSidebar = new ChallengeSidebar(
+                    challengeStateRepository,
+                    structureGoalCatalog
+            );
         } catch (RuntimeException exception) {
             getLogger().severe("Could not initialize challenge storage: " + exception.getMessage());
             challengeStateRepository.close();
@@ -67,6 +73,7 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
                 new StructureSelectionListener(
                         challengeStateRepository,
                         structureGoalCatalog,
+                        challengeSidebar,
                         getLogger(),
                         this
                 ),
@@ -78,23 +85,33 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
                         challengeStateRepository,
                         placedBlockRepository,
                         structureGoalCatalog,
+                        challengeSidebar,
                         getLogger()
                 ),
                 this
         );
 
         StructureCompleteCommand structureCompleteCommand =
-                new StructureCompleteCommand(challengeStateRepository, structureGoalCatalog);
+                new StructureCompleteCommand(
+                        challengeStateRepository,
+                        structureGoalCatalog,
+                        challengeSidebar
+                );
         getCommand("structurecomplete").setExecutor(structureCompleteCommand);
         getCommand("structurecomplete").setTabCompleter(structureCompleteCommand);
 
         ResetCommand resetCommand = new ResetCommand(
                 challengeStateRepository,
                 placedBlockRepository,
+                challengeSidebar,
                 getLogger()
         );
         getCommand("reset").setExecutor(resetCommand);
         getCommand("reset").setTabCompleter(resetCommand);
+
+        getServer().getPluginManager().registerEvents(challengeSidebar, this);
+        getCommand("chesthud").setExecutor(challengeSidebar);
+        challengeSidebar.refreshAll();
 
         getLogger().info(
                 "All and Only Chests enabled with "

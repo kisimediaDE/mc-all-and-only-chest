@@ -46,6 +46,13 @@ public final class ChallengeStateRepository implements AutoCloseable {
                 category_id TEXT PRIMARY KEY
             )
             """;
+    private static final String CREATE_VISITED_SOURCES_TABLE = """
+            CREATE TABLE IF NOT EXISTS visited_structure_sources (
+                category_id TEXT NOT NULL,
+                source_key TEXT NOT NULL,
+                PRIMARY KEY (category_id, source_key)
+            )
+            """;
 
     private final Path databasePath;
     private final Map<StructureCategory, Set<String>> foundGoals =
@@ -53,6 +60,7 @@ public final class ChallengeStateRepository implements AutoCloseable {
     private final Set<StructureCategory> completedStructures = new HashSet<>();
     private Connection connection;
     private StructureCategory activeStructure;
+    private int openedSources;
 
     public ChallengeStateRepository(Path databasePath) {
         this.databasePath = databasePath;
@@ -74,9 +82,11 @@ public final class ChallengeStateRepository implements AutoCloseable {
                 statement.execute(CREATE_TABLE);
                 statement.execute(CREATE_FOUND_GOALS_TABLE);
                 statement.execute(CREATE_COMPLETED_STRUCTURES_TABLE);
+                statement.execute(CREATE_VISITED_SOURCES_TABLE);
             }
 
             activeStructure = readActiveStructure().orElse(null);
+            openedSources = readVisitedSourceCount(activeStructure);
             loadProgress();
         } catch (IOException | SQLException | ClassNotFoundException exception) {
             close();
@@ -107,14 +117,57 @@ public final class ChallengeStateRepository implements AutoCloseable {
                 ON CONFLICT(state_key) DO UPDATE SET state_value = excluded.state_value
                 """;
 
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, ACTIVE_STRUCTURE_KEY);
-            statement.setString(2, category.id());
-            statement.executeUpdate();
+        try {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, ACTIVE_STRUCTURE_KEY);
+                statement.setString(2, category.id());
+                statement.executeUpdate();
+            }
+            try (Statement statement = connection.createStatement()) {
+                statement.executeUpdate("DELETE FROM visited_structure_sources");
+            }
+            connection.commit();
             activeStructure = category;
+            openedSources = 0;
             return SelectionResult.SELECTED;
         } catch (SQLException exception) {
+            rollback();
             throw new IllegalStateException("Failed to persist the active structure", exception);
+        } finally {
+            restoreAutoCommit();
+        }
+    }
+
+    public int openedSourceCount() {
+        requireOpen();
+        return openedSources;
+    }
+
+    /**
+     * Counts a distinct allowed container, Vault, or Trial Spawner for the
+     * currently active structure. Reopening the same source does not increase
+     * the counter.
+     */
+    public int recordVisitedSource(StructureCategory category, String sourceKey) {
+        requireOpen();
+        if (activeStructure != category || completedStructures.contains(category)) {
+            return openedSources;
+        }
+
+        String sql = """
+                INSERT OR IGNORE INTO visited_structure_sources (category_id, source_key)
+                VALUES (?, ?)
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, category.id());
+            statement.setString(2, sourceKey);
+            if (statement.executeUpdate() == 1) {
+                openedSources++;
+            }
+            return openedSources;
+        } catch (SQLException exception) {
+            throw new IllegalStateException("Failed to persist the visited loot source", exception);
         }
     }
 
@@ -144,11 +197,13 @@ public final class ChallengeStateRepository implements AutoCloseable {
             try (Statement statement = connection.createStatement()) {
                 statement.executeUpdate("DELETE FROM found_structure_goals");
                 statement.executeUpdate("DELETE FROM completed_structures");
+                statement.executeUpdate("DELETE FROM visited_structure_sources");
                 statement.executeUpdate("DELETE FROM challenge_state");
             }
             connection.commit();
 
             activeStructure = null;
+            openedSources = 0;
             foundGoals.values().forEach(Set::clear);
             completedStructures.clear();
         } catch (SQLException exception) {
@@ -252,6 +307,23 @@ public final class ChallengeStateRepository implements AutoCloseable {
         }
     }
 
+    private int readVisitedSourceCount(StructureCategory category) throws SQLException {
+        if (category == null) {
+            return 0;
+        }
+        String sql = """
+                SELECT COUNT(*) AS source_count
+                FROM visited_structure_sources
+                WHERE category_id = ?
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, category.id());
+            try (ResultSet result = statement.executeQuery()) {
+                return result.next() ? result.getInt("source_count") : 0;
+            }
+        }
+    }
+
     private void loadProgress() throws SQLException {
         foundGoals.clear();
         for (StructureCategory category : StructureCategory.values()) {
@@ -317,6 +389,7 @@ public final class ChallengeStateRepository implements AutoCloseable {
         } finally {
             connection = null;
             activeStructure = null;
+            openedSources = 0;
             foundGoals.clear();
             completedStructures.clear();
         }
