@@ -9,6 +9,9 @@ publicly available
 plugin. The implementation in the main source tree is being rewritten from
 scratch.
 
+The version-by-version Vanilla structure verification is documented in
+[`docs/vanilla-structure-audit.md`](docs/vanilla-structure-audit.md).
+
 ## Requirements
 
 - Java 25
@@ -70,7 +73,11 @@ Windows, and Linux.
 
 The current milestone provides:
 
-- a working `/gui` placeholder command;
+- a `/gui` selection menu containing the 18 verified chest-bearing structure
+  categories from Vanilla 26.2;
+- persistent selection of the currently active structure;
+- an explicit mapping of all 55 Vanilla structure loot tables to those
+  categories (the non-structure bonus chest is excluded);
 - no item drops from naturally generated blocks;
 - normal drops from blocks placed by a player;
 - persistent placed-block tracking across server restarts;

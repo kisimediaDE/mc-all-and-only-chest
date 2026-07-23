@@ -4,6 +4,9 @@ import dev.playmonkeei.allandonlychests.listeners.ChallengeBlockListener;
 import dev.playmonkeei.allandonlychests.listeners.ExplosionDropListener;
 import dev.playmonkeei.allandonlychests.listeners.MobDropListener;
 import dev.playmonkeei.allandonlychests.listeners.MovingBlockListener;
+import dev.playmonkeei.allandonlychests.listeners.StructureSelectionListener;
+import dev.playmonkeei.allandonlychests.gui.StructureSelectionMenu;
+import dev.playmonkeei.allandonlychests.storage.ChallengeStateRepository;
 import dev.playmonkeei.allandonlychests.storage.PlacedBlockRepository;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
@@ -18,17 +21,21 @@ import org.jetbrains.annotations.NotNull;
 public final class AllAndOnlyChestsPlugin extends JavaPlugin {
 
     private PlacedBlockRepository placedBlockRepository;
+    private ChallengeStateRepository challengeStateRepository;
 
     @Override
     public void onEnable() {
-        placedBlockRepository = new PlacedBlockRepository(
-                getDataFolder().toPath().resolve("data").resolve("challenge.db")
-        );
+        var databasePath = getDataFolder().toPath().resolve("data").resolve("challenge.db");
+        placedBlockRepository = new PlacedBlockRepository(databasePath);
+        challengeStateRepository = new ChallengeStateRepository(databasePath);
 
         try {
             placedBlockRepository.open();
+            challengeStateRepository.open();
         } catch (RuntimeException exception) {
             getLogger().severe("Could not initialize challenge storage: " + exception.getMessage());
+            challengeStateRepository.close();
+            placedBlockRepository.close();
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -50,16 +57,27 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
                 ),
                 this
         );
+        getServer().getPluginManager().registerEvents(
+                new StructureSelectionListener(challengeStateRepository, getLogger(), this),
+                this
+        );
 
         getLogger().info(
                 "All and Only Chests enabled with "
                         + placedBlockRepository.size()
-                        + " tracked player-placed blocks."
+                        + " tracked player-placed blocks and active structure "
+                        + challengeStateRepository.activeStructure()
+                                .map(category -> "'" + category.id() + "'")
+                                .orElse("none")
+                        + "."
         );
     }
 
     @Override
     public void onDisable() {
+        if (challengeStateRepository != null) {
+            challengeStateRepository.close();
+        }
         if (placedBlockRepository != null) {
             placedBlockRepository.close();
         }
@@ -76,12 +94,14 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
             return false;
         }
 
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("Dieser Befehl kann nur im Spiel verwendet werden.");
             return true;
         }
 
-        sender.sendMessage("§aAll and Only Chests läuft! Die Strukturübersicht folgt im nächsten Schritt.");
+        player.openInventory(
+                new StructureSelectionMenu(this, challengeStateRepository).getInventory()
+        );
         return true;
     }
 }
