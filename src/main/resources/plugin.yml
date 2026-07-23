@@ -1,0 +1,17 @@
+name: AllAndOnlyChests
+version: '0.1.0-SNAPSHOT'
+main: dev.simonkirchner.allandonlychests.AllAndOnlyChestsPlugin
+api-version: '26.1'
+description: All and Only Chests challenge for Paper
+author: Simon Kirchner
+
+commands:
+  gui:
+    description: Öffnet die Strukturübersicht.
+    usage: /gui
+    permission: allandonlychests.command.gui
+
+permissions:
+  allandonlychests.command.gui:
+    description: Erlaubt das Öffnen der Strukturübersicht.
+    default: true

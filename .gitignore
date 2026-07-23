@@ -1,3 +1,8 @@
 backup
 backup/*
 .DS_Store
+.gradle/
+build/
+run/
+*.iml
+.idea/
