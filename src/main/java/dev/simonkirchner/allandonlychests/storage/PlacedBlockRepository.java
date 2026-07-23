@@ -12,6 +12,7 @@ import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -148,6 +149,44 @@ public final class PlacedBlockRepository implements AutoCloseable {
         } catch (SQLException exception) {
             rollback();
             throw new IllegalStateException("Failed to remove placed blocks", exception);
+        } finally {
+            restoreAutoCommit();
+        }
+    }
+
+    /**
+     * Atomically migrates tracked source positions to their destinations.
+     */
+    public int moveAll(Map<BlockPosition, BlockPosition> movements) {
+        requireOpen();
+        Map<BlockPosition, BlockPosition> trackedMovements = movements.entrySet().stream()
+                .filter(entry -> placedBlocks.contains(entry.getKey()))
+                .collect(java.util.stream.Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        if (trackedMovements.isEmpty()) {
+            return 0;
+        }
+
+        try {
+            connection.setAutoCommit(false);
+            try (PreparedStatement deleteStatement = connection.prepareStatement(DELETE_BLOCK);
+                 PreparedStatement insertStatement = connection.prepareStatement(INSERT_BLOCK)) {
+                for (Map.Entry<BlockPosition, BlockPosition> movement : trackedMovements.entrySet()) {
+                    bind(deleteStatement, movement.getKey());
+                    deleteStatement.addBatch();
+                    bind(insertStatement, movement.getValue());
+                    insertStatement.addBatch();
+                }
+                deleteStatement.executeBatch();
+                insertStatement.executeBatch();
+            }
+            connection.commit();
+            placedBlocks.removeAll(trackedMovements.keySet());
+            placedBlocks.addAll(trackedMovements.values());
+            return trackedMovements.size();
+        } catch (SQLException exception) {
+            rollback();
+            throw new IllegalStateException("Failed to move placed blocks", exception);
         } finally {
             restoreAutoCommit();
         }

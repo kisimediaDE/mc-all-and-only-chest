@@ -17,4 +17,8 @@ public record BlockPosition(UUID worldId, int x, int y, int z) {
                 block.getZ()
         );
     }
+
+    public BlockPosition offset(int deltaX, int deltaY, int deltaZ) {
+        return new BlockPosition(worldId, x + deltaX, y + deltaY, z + deltaZ);
+    }
 }

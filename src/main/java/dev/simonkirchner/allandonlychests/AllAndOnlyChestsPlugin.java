@@ -3,7 +3,9 @@ package dev.simonkirchner.allandonlychests;
 import dev.simonkirchner.allandonlychests.listeners.ChallengeBlockListener;
 import dev.simonkirchner.allandonlychests.listeners.ExplosionDropListener;
 import dev.simonkirchner.allandonlychests.listeners.MobDropListener;
+import dev.simonkirchner.allandonlychests.listeners.MovingBlockListener;
 import dev.simonkirchner.allandonlychests.storage.PlacedBlockRepository;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -40,6 +42,14 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
                 this
         );
         getServer().getPluginManager().registerEvents(new MobDropListener(), this);
+        getServer().getPluginManager().registerEvents(
+                new MovingBlockListener(
+                        placedBlockRepository,
+                        getLogger(),
+                        new NamespacedKey(this, "player_placed_falling_block")
+                ),
+                this
+        );
 
         getLogger().info(
                 "All and Only Chests enabled with "
