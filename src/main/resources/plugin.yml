@@ -10,8 +10,15 @@ commands:
     description: Öffnet die Strukturübersicht.
     usage: /gui
     permission: allandonlychests.command.gui
+  structurecomplete:
+    description: Markiert eine Struktur zu Testzwecken als abgeschlossen.
+    usage: /structurecomplete <Kategorie>
+    permission: allandonlychests.command.structurecomplete
 
 permissions:
   allandonlychests.command.gui:
     description: Erlaubt das Öffnen der Strukturübersicht.
     default: true
+  allandonlychests.command.structurecomplete:
+    description: Erlaubt das testweise Abschließen einer Struktur.
+    default: op
