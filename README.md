@@ -58,8 +58,22 @@ scripts\start-test-server.bat
 The first Paper launch creates `run/eula.txt` and stops. Read the linked
 Minecraft EULA before changing `eula=false` to `eula=true`.
 
+## Persistence
+
+Challenge data is stored in
+`plugins/AllAndOnlyChests/data/challenge.db` inside the server directory.
+Player-placed block positions are indexed in memory while the server runs and
+written to SQLite immediately. The bundled SQLite driver supports macOS,
+Windows, and Linux.
+
 ## Current smoke test
 
-This initial project skeleton only verifies that the plugin loads and that the
-command `/gui` is registered. Challenge rules will be added as individually
-testable milestones.
+The current milestone provides:
+
+- a working `/gui` placeholder command;
+- no item drops from naturally generated blocks;
+- normal drops from blocks placed by a player;
+- persistent placed-block tracking across server restarts.
+
+Pistons, falling blocks, explosions, and non-player block transformations are
+covered by later rule-specific milestones.

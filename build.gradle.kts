@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:26.2.build.+")
+    implementation("org.xerial:sqlite-jdbc:3.53.2.0")
 }
 
 java {
@@ -30,6 +31,13 @@ tasks {
 
     jar {
         archiveBaseName = "AllAndOnlyChests"
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        from({
+            configurations.runtimeClasspath.get().map { dependency ->
+                if (dependency.isDirectory) dependency else zipTree(dependency)
+            }
+        })
+        exclude("META-INF/*.DSA", "META-INF/*.RSA", "META-INF/*.SF")
     }
 
     register<Copy>("deployToTestServer") {
