@@ -1,8 +1,8 @@
-package dev.simonkirchner.allandonlychests.listeners;
+package dev.playmonkeei.allandonlychests.listeners;
 
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
-import dev.simonkirchner.allandonlychests.storage.BlockPosition;
-import dev.simonkirchner.allandonlychests.storage.PlacedBlockRepository;
+import dev.playmonkeei.allandonlychests.storage.BlockPosition;
+import dev.playmonkeei.allandonlychests.storage.PlacedBlockRepository;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

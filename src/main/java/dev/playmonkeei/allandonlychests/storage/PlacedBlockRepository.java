@@ -1,4 +1,4 @@
-package dev.simonkirchner.allandonlychests.storage;
+package dev.playmonkeei.allandonlychests.storage;
 
 import java.io.IOException;
 import java.nio.file.Files;

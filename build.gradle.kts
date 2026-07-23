@@ -2,7 +2,7 @@ plugins {
     java
 }
 
-group = "dev.simonkirchner"
+group = "dev.playmonkeei"
 version = "0.1.0-SNAPSHOT"
 
 repositories {

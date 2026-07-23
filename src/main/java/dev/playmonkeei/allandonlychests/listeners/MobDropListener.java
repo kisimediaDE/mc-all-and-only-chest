@@ -1,4 +1,4 @@
-package dev.simonkirchner.allandonlychests.listeners;
+package dev.playmonkeei.allandonlychests.listeners;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Blaze;

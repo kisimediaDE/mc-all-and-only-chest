@@ -1,4 +1,4 @@
-package dev.simonkirchner.allandonlychests.storage;
+package dev.playmonkeei.allandonlychests.storage;
 
 import org.bukkit.block.Block;
 

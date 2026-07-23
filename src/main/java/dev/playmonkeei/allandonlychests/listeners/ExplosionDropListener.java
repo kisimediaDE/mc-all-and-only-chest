@@ -1,7 +1,7 @@
-package dev.simonkirchner.allandonlychests.listeners;
+package dev.playmonkeei.allandonlychests.listeners;
 
-import dev.simonkirchner.allandonlychests.storage.BlockPosition;
-import dev.simonkirchner.allandonlychests.storage.PlacedBlockRepository;
+import dev.playmonkeei.allandonlychests.storage.BlockPosition;
+import dev.playmonkeei.allandonlychests.storage.PlacedBlockRepository;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;

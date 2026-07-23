@@ -1,10 +1,10 @@
-package dev.simonkirchner.allandonlychests;
+package dev.playmonkeei.allandonlychests;
 
-import dev.simonkirchner.allandonlychests.listeners.ChallengeBlockListener;
-import dev.simonkirchner.allandonlychests.listeners.ExplosionDropListener;
-import dev.simonkirchner.allandonlychests.listeners.MobDropListener;
-import dev.simonkirchner.allandonlychests.listeners.MovingBlockListener;
-import dev.simonkirchner.allandonlychests.storage.PlacedBlockRepository;
+import dev.playmonkeei.allandonlychests.listeners.ChallengeBlockListener;
+import dev.playmonkeei.allandonlychests.listeners.ExplosionDropListener;
+import dev.playmonkeei.allandonlychests.listeners.MobDropListener;
+import dev.playmonkeei.allandonlychests.listeners.MovingBlockListener;
+import dev.playmonkeei.allandonlychests.storage.PlacedBlockRepository;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
