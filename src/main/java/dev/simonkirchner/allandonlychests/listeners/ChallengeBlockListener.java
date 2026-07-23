@@ -1,5 +1,6 @@
 package dev.simonkirchner.allandonlychests.listeners;
 
+import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import dev.simonkirchner.allandonlychests.storage.BlockPosition;
 import dev.simonkirchner.allandonlychests.storage.PlacedBlockRepository;
 import org.bukkit.block.BlockState;
@@ -75,6 +76,19 @@ public final class ChallengeBlockListener implements Listener {
                 player.sendMessage(STORAGE_ERROR);
             }
             logger.log(Level.SEVERE, "Cancelled TNT priming after a storage failure", exception);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onBlockDestroyedByWorld(BlockDestroyEvent event) {
+        try {
+            boolean playerPlaced = repository.untrack(BlockPosition.from(event.getBlock()));
+            if (!playerPlaced) {
+                event.setWillDrop(false);
+            }
+        } catch (RuntimeException exception) {
+            event.setCancelled(true);
+            logger.log(Level.SEVERE, "Cancelled a world-caused block destruction after a storage failure", exception);
         }
     }
 

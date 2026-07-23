@@ -54,31 +54,32 @@ public final class ExplosionDropListener implements Listener {
     }
 
     private void processAffectedBlocks(List<Block> blocks) {
-        Set<Block> snowBlocks = new LinkedHashSet<>();
+        Set<Block> secondaryBlocks = new LinkedHashSet<>();
         for (Block block : List.copyOf(blocks)) {
-            if (isSnow(block)) {
-                snowBlocks.add(block);
-            }
-
             Block blockAbove = block.getRelative(BlockFace.UP);
-            if (isSnow(blockAbove)) {
-                snowBlocks.add(blockAbove);
+            if (canBecomeUnsupported(blockAbove)) {
+                secondaryBlocks.add(blockAbove);
             }
         }
 
         List<Block> trackedCandidates = new ArrayList<>(blocks);
-        trackedCandidates.addAll(snowBlocks);
+        trackedCandidates.addAll(secondaryBlocks);
         repository.untrackAll(trackedCandidates.stream().map(BlockPosition::from).toList());
 
-        // Unsupported snow layers can break through a later physics update and
-        // bypass the explosion yield. Remove those blocks before that update.
-        for (Block snowBlock : snowBlocks) {
-            snowBlock.setType(Material.AIR, false);
-            blocks.remove(snowBlock);
+        // Plants, mushrooms, snow layers, redstone, and similar blocks can
+        // break through a later support-physics update and bypass the
+        // explosion yield. Remove them before that update.
+        for (Block secondaryBlock : secondaryBlocks) {
+            secondaryBlock.setType(Material.AIR, false);
+            blocks.remove(secondaryBlock);
         }
     }
 
-    private static boolean isSnow(Block block) {
-        return block.getType() == Material.SNOW || block.getType() == Material.SNOW_BLOCK;
+    private static boolean canBecomeUnsupported(Block block) {
+        Material type = block.getType();
+        return !type.isAir()
+                && !type.isSolid()
+                && type != Material.WATER
+                && type != Material.LAVA;
     }
 }
