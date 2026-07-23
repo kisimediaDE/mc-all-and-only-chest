@@ -3,12 +3,14 @@ package dev.simonkirchner.allandonlychests.listeners;
 import dev.simonkirchner.allandonlychests.storage.BlockPosition;
 import dev.simonkirchner.allandonlychests.storage.PlacedBlockRepository;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockMultiPlaceEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.TNTPrimeEvent;
 
 import java.util.Collection;
 import java.util.List;
@@ -60,6 +62,19 @@ public final class ChallengeBlockListener implements Listener {
             event.setCancelled(true);
             event.getPlayer().sendMessage(STORAGE_ERROR);
             logger.log(Level.SEVERE, "Could not persist a broken player-placed block", exception);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onTntPrime(TNTPrimeEvent event) {
+        try {
+            repository.untrack(BlockPosition.from(event.getBlock()));
+        } catch (RuntimeException exception) {
+            event.setCancelled(true);
+            if (event.getPrimingEntity() instanceof Player player) {
+                player.sendMessage(STORAGE_ERROR);
+            }
+            logger.log(Level.SEVERE, "Cancelled TNT priming after a storage failure", exception);
         }
     }
 
