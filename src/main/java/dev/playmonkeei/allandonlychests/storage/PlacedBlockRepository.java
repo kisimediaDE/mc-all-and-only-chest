@@ -76,6 +76,11 @@ public final class PlacedBlockRepository implements AutoCloseable {
         return placedBlocks.size();
     }
 
+    public boolean isTracked(BlockPosition position) {
+        requireOpen();
+        return placedBlocks.contains(position);
+    }
+
     public void trackAll(Collection<BlockPosition> positions) {
         if (positions.isEmpty()) {
             return;

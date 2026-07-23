@@ -491,11 +491,13 @@ trial_chambers:
   - bamboo_planks
   - bolt_armor_trim_smithing_template
   - bone_meal
-  - book
   - bow
+  - bread
   - bucket
   - cake
   - compass
+  - cooked_beef
+  - cooked_chicken
   - crossbow
   - diamond
   - diamond_axe
@@ -527,13 +529,12 @@ trial_chambers:
   - music_disc_creator
   - music_disc_precipice
   - ominous_bottle
-  - potion
+  - ominous_trial_key
   - scaffolding
   - shield
   - stick
   - stone_axe
   - stone_pickaxe
-  - tipped_arrow
   - torch
   - trial_key
   - trident

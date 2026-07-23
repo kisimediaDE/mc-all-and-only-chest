@@ -2,6 +2,7 @@ package dev.playmonkeei.allandonlychests.gui;
 
 import dev.playmonkeei.allandonlychests.challenge.StructureCategory;
 import dev.playmonkeei.allandonlychests.challenge.StructureGoalCatalog;
+import dev.playmonkeei.allandonlychests.challenge.StructureGoal;
 import dev.playmonkeei.allandonlychests.storage.ChallengeStateRepository;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -27,10 +28,14 @@ public final class StructureDetailMenu implements InventoryHolder {
     public static final int SELECT_SLOT = 53;
 
     private static final int SIZE = 54;
-    private static final int PAGE_SIZE = 45;
+    private static final int PAGE_SIZE = 18;
+    private static final int[] GOAL_SLOTS = {
+            0, 1, 2, 3, 4, 5, 6, 7, 8,
+            18, 19, 20, 21, 22, 23, 24, 25, 26
+    };
 
     private final StructureCategory category;
-    private final List<Material> goals;
+    private final List<StructureGoal> goals;
     private final ChallengeStateRepository stateRepository;
     private final int page;
     private final int pageCount;
@@ -81,20 +86,25 @@ public final class StructureDetailMenu implements InventoryHolder {
         int start = page * PAGE_SIZE;
         int end = Math.min(start + PAGE_SIZE, goals.size());
 
-        for (int goalIndex = start; goalIndex < end; goalIndex++) {
-            inventory.setItem(goalIndex - start, createMissingGoal(goals.get(goalIndex)));
-        }
-
         ItemStack filler = createNamedItem(
                 Material.BLACK_STAINED_GLASS_PANE,
                 Component.empty(),
                 true
         );
-        for (int slot = end - start; slot < PAGE_SIZE; slot++) {
+        for (int slot = 0; slot < SIZE; slot++) {
             inventory.setItem(slot, filler);
         }
-        for (int slot = PAGE_SIZE; slot < SIZE; slot++) {
-            inventory.setItem(slot, filler);
+
+        for (int goalIndex = start; goalIndex < end; goalIndex++) {
+            StructureGoal goal = goals.get(goalIndex);
+            int displayIndex = goalIndex - start;
+            int goalSlot = GOAL_SLOTS[displayIndex];
+            boolean found = stateRepository.isFound(category, goal.key());
+            inventory.setItem(
+                    goalSlot,
+                    createGoalItem(goal, found)
+            );
+            inventory.setItem(goalSlot + 9, createGoalStatus(found));
         }
 
         inventory.setItem(
@@ -133,31 +143,64 @@ public final class StructureDetailMenu implements InventoryHolder {
             );
         }
 
+        boolean completed = stateRepository.isCompleted(category);
         boolean active = stateRepository.activeStructure().orElse(null) == category;
         inventory.setItem(
                 SELECT_SLOT,
                 createNamedItem(
-                        active ? Material.YELLOW_STAINED_GLASS_PANE : Material.NETHER_STAR,
+                        completed
+                                ? Material.LIME_STAINED_GLASS_PANE
+                                : active
+                                        ? Material.YELLOW_STAINED_GLASS_PANE
+                                        : Material.NETHER_STAR,
                         Component.text(
-                                active ? "▶ Aktive Struktur" : "Als aktive Struktur auswählen",
-                                active ? NamedTextColor.GOLD : NamedTextColor.AQUA
+                                completed
+                                        ? "✓ Abgeschlossen"
+                                        : active
+                                                ? "▶ Aktive Struktur"
+                                                : "Als aktive Struktur auswählen",
+                                completed
+                                        ? NamedTextColor.GREEN
+                                        : active ? NamedTextColor.GOLD : NamedTextColor.AQUA
                         ),
                         false
                 )
         );
     }
 
-    private ItemStack createMissingGoal(Material material) {
-        ItemStack item = new ItemStack(material);
+    private ItemStack createGoalItem(StructureGoal goal, boolean found) {
+        ItemStack item = new ItemStack(goal.icon());
         ItemMeta meta = item.getItemMeta();
-        meta.lore(List.of(
-                Component.text("Noch nicht gefunden", NamedTextColor.RED)
+        meta.displayName(goal.displayName().color(
+                found ? NamedTextColor.GREEN : NamedTextColor.RED
         ));
+        meta.lore(List.of(
+                Component.text(
+                        found ? "✓ Gefunden" : "Noch nicht gefunden",
+                        found ? NamedTextColor.GREEN : NamedTextColor.RED
+                )
+        ));
+        meta.setEnchantmentGlintOverride(found);
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    private ItemStack createGoalStatus(boolean found) {
+        ItemStack item = new ItemStack(
+                found ? Material.LIME_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE
+        );
+        ItemMeta meta = item.getItemMeta();
+        if (found) {
+            meta.displayName(Component.text("✓ Gefunden", NamedTextColor.GREEN));
+        } else {
+            meta.setHideTooltip(true);
+        }
         item.setItemMeta(meta);
         return item;
     }
 
     private ItemStack createPageIndicator() {
+        int found = stateRepository.foundCount(category);
         ItemStack item = createNamedItem(
                 Material.BOOK,
                 Component.text(
@@ -169,7 +212,10 @@ public final class StructureDetailMenu implements InventoryHolder {
         ItemMeta meta = item.getItemMeta();
         meta.lore(List.of(
                 Component.text(goals.size() + " unterschiedliche Items", NamedTextColor.GRAY),
-                Component.text("Fortschritt: 0/" + goals.size(), NamedTextColor.RED)
+                Component.text(
+                        "Fortschritt: " + found + "/" + goals.size(),
+                        found == goals.size() ? NamedTextColor.GREEN : NamedTextColor.RED
+                )
         ));
         item.setItemMeta(meta);
         return item;

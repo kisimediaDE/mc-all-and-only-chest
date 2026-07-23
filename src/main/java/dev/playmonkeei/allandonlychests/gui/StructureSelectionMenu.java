@@ -1,6 +1,7 @@
 package dev.playmonkeei.allandonlychests.gui;
 
 import dev.playmonkeei.allandonlychests.challenge.StructureCategory;
+import dev.playmonkeei.allandonlychests.challenge.StructureGoalCatalog;
 import dev.playmonkeei.allandonlychests.storage.ChallengeStateRepository;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -29,11 +30,17 @@ public final class StructureSelectionMenu implements InventoryHolder {
     };
 
     private final ChallengeStateRepository stateRepository;
+    private final StructureGoalCatalog goalCatalog;
     private final NamespacedKey structureIdKey;
     private final Inventory inventory;
 
-    public StructureSelectionMenu(Plugin plugin, ChallengeStateRepository stateRepository) {
+    public StructureSelectionMenu(
+            Plugin plugin,
+            ChallengeStateRepository stateRepository,
+            StructureGoalCatalog goalCatalog
+    ) {
         this.stateRepository = stateRepository;
+        this.goalCatalog = goalCatalog;
         structureIdKey = new NamespacedKey(plugin, "structure_id");
         inventory = Bukkit.createInventory(
                 this,
@@ -56,8 +63,12 @@ public final class StructureSelectionMenu implements InventoryHolder {
             StructureCategory category = categories[index];
             int categorySlot = CATEGORY_SLOTS[index];
             boolean selected = category == active;
-            inventory.setItem(categorySlot, createCategoryItem(category, selected));
-            inventory.setItem(categorySlot + 9, createStatusItem(selected));
+            boolean completed = stateRepository.isCompleted(category);
+            inventory.setItem(
+                    categorySlot,
+                    createCategoryItem(category, selected, completed)
+            );
+            inventory.setItem(categorySlot + 9, createStatusItem(selected, completed));
         }
 
         ItemStack filler = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
@@ -74,24 +85,36 @@ public final class StructureSelectionMenu implements InventoryHolder {
         return inventory;
     }
 
-    private ItemStack createCategoryItem(StructureCategory category, boolean selected) {
+    private ItemStack createCategoryItem(
+            StructureCategory category,
+            boolean selected,
+            boolean completed
+    ) {
+        int found = stateRepository.foundCount(category);
+        int total = goalCatalog.goalsFor(category).size();
         ItemStack item = new ItemStack(category.icon());
         ItemMeta meta = item.getItemMeta();
         meta.displayName(Component.text(
                 category.displayName(),
-                selected ? NamedTextColor.GOLD : NamedTextColor.WHITE
+                completed
+                        ? NamedTextColor.GREEN
+                        : selected ? NamedTextColor.GOLD : NamedTextColor.WHITE
         ));
         meta.lore(List.of(
                 Component.text(
-                        selected ? "Aktuell aktiv" : "Details öffnen",
-                        selected ? NamedTextColor.GOLD : NamedTextColor.GRAY
+                        completed
+                                ? "✓ Abgeschlossen"
+                                : selected ? "▶ Aktuell aktiv" : "Details öffnen",
+                        completed
+                                ? NamedTextColor.GREEN
+                                : selected ? NamedTextColor.GOLD : NamedTextColor.GRAY
                 ),
                 Component.text(
-                        category.lootTables().size() + " Vanilla-Loot-Tabelle(n)",
-                        NamedTextColor.DARK_GRAY
+                        "Fortschritt: " + found + "/" + total,
+                        completed ? NamedTextColor.GREEN : NamedTextColor.GRAY
                 )
         ));
-        meta.setEnchantmentGlintOverride(selected);
+        meta.setEnchantmentGlintOverride(selected || completed);
         meta.getPersistentDataContainer().set(
                 structureIdKey,
                 PersistentDataType.STRING,
@@ -101,12 +124,18 @@ public final class StructureSelectionMenu implements InventoryHolder {
         return item;
     }
 
-    private ItemStack createStatusItem(boolean selected) {
+    private ItemStack createStatusItem(boolean selected, boolean completed) {
         ItemStack item = new ItemStack(
-                selected ? Material.YELLOW_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE
+                completed
+                        ? Material.LIME_STAINED_GLASS_PANE
+                        : selected
+                                ? Material.YELLOW_STAINED_GLASS_PANE
+                                : Material.GRAY_STAINED_GLASS_PANE
         );
         ItemMeta meta = item.getItemMeta();
-        if (selected) {
+        if (completed) {
+            meta.displayName(Component.text("✓ Abgeschlossen", NamedTextColor.GREEN));
+        } else if (selected) {
             meta.displayName(Component.text("▶ Aktiv", NamedTextColor.GOLD));
         } else {
             meta.setHideTooltip(true);

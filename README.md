@@ -78,6 +78,12 @@ The current milestone provides:
 - paginated structure details showing the unique obtainable item types from
   the official Vanilla 26.2 loot tables;
 - persistent selection of the currently active structure;
+- persistent item progress and completed-structure state;
+- structure-container access restricted to the active category;
+- Trial Chamber Vault and Trial Spawner rewards handled as legal structure
+  loot, including the original plugin's potion, tipped-arrow, and enchanted
+  diamond-axe distinctions;
+- hopper extraction blocked for recognized structure containers;
 - an explicit mapping of all 55 Vanilla structure loot tables to those
   categories (the non-structure bonus chest is excluded);
 - no item drops from naturally generated blocks;

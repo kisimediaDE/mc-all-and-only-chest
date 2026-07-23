@@ -183,7 +183,11 @@ public enum StructureCategory {
         if (!NamespacedKey.MINECRAFT.equals(key.getNamespace())) {
             return Optional.empty();
         }
-        return Optional.ofNullable(BY_LOOT_TABLE.get(key.getKey()));
+        String path = key.getKey();
+        if (path.startsWith("chests/")) {
+            path = path.substring("chests/".length());
+        }
+        return Optional.ofNullable(BY_LOOT_TABLE.get(path));
     }
 
     private static void requireUnique(

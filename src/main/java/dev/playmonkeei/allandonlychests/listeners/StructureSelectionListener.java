@@ -92,7 +92,11 @@ public final class StructureSelectionListener implements Listener {
             plugin.getServer().getScheduler().runTask(
                     plugin,
                     () -> player.openInventory(
-                            new StructureSelectionMenu(plugin, stateRepository).getInventory()
+                            new StructureSelectionMenu(
+                                    plugin,
+                                    stateRepository,
+                                    goalCatalog
+                            ).getInventory()
                     )
             );
             return;
@@ -116,11 +120,24 @@ public final class StructureSelectionListener implements Listener {
         }
 
         try {
-            stateRepository.selectStructure(menu.category());
-            player.sendMessage("§aAktive Struktur: §f" + menu.category().displayName());
-            plugin.getServer().getScheduler().runTask(
-                    plugin,
-                    () -> openDetail(player, menu.category(), menu.page())
+            ChallengeStateRepository.SelectionResult result =
+                    stateRepository.selectStructure(menu.category());
+            switch (result) {
+                case SELECTED -> player.sendMessage(
+                        "§aAktive Struktur: §f" + menu.category().displayName()
+                );
+                case ALREADY_ACTIVE -> player.sendMessage(
+                        "§eDiese Struktur ist bereits aktiv."
+                );
+                case ACTIVE_STRUCTURE_INCOMPLETE -> player.sendMessage(
+                        "§cSchließe zuerst die aktuell aktive Struktur ab."
+                );
+                case COMPLETED -> player.sendMessage(
+                        "§aDiese Struktur ist bereits abgeschlossen."
+                );
+            }
+            plugin.getServer().getScheduler().runTask(plugin, () ->
+                    openDetail(player, menu.category(), menu.page())
             );
         } catch (RuntimeException exception) {
             player.sendMessage("§cDie Auswahl konnte nicht gespeichert werden.");

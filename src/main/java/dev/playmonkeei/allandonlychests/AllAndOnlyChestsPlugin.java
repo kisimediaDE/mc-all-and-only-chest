@@ -6,6 +6,7 @@ import dev.playmonkeei.allandonlychests.listeners.ExplosionDropListener;
 import dev.playmonkeei.allandonlychests.listeners.MobDropListener;
 import dev.playmonkeei.allandonlychests.listeners.MovingBlockListener;
 import dev.playmonkeei.allandonlychests.listeners.StructureSelectionListener;
+import dev.playmonkeei.allandonlychests.listeners.StructureLootListener;
 import dev.playmonkeei.allandonlychests.gui.StructureSelectionMenu;
 import dev.playmonkeei.allandonlychests.storage.ChallengeStateRepository;
 import dev.playmonkeei.allandonlychests.storage.PlacedBlockRepository;
@@ -69,6 +70,16 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
                 ),
                 this
         );
+        getServer().getPluginManager().registerEvents(
+                new StructureLootListener(
+                        this,
+                        challengeStateRepository,
+                        placedBlockRepository,
+                        structureGoalCatalog,
+                        getLogger()
+                ),
+                this
+        );
 
         getLogger().info(
                 "All and Only Chests enabled with "
@@ -108,7 +119,11 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
         }
 
         player.openInventory(
-                new StructureSelectionMenu(this, challengeStateRepository).getInventory()
+                new StructureSelectionMenu(
+                        this,
+                        challengeStateRepository,
+                        structureGoalCatalog
+                ).getInventory()
         );
         return true;
     }
