@@ -53,7 +53,7 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
         }
 
         getServer().getPluginManager().registerEvents(
-                new ChallengeBlockListener(placedBlockRepository, getLogger()),
+                new ChallengeBlockListener(this, placedBlockRepository, getLogger()),
                 this
         );
         getServer().getPluginManager().registerEvents(

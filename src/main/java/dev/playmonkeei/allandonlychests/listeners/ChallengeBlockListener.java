@@ -3,15 +3,23 @@ package dev.playmonkeei.allandonlychests.listeners;
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import dev.playmonkeei.allandonlychests.storage.BlockPosition;
 import dev.playmonkeei.allandonlychests.storage.PlacedBlockRepository;
+import org.bukkit.Material;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.AbstractArrow;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockMultiPlaceEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.TNTPrimeEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.projectiles.BlockProjectileSource;
 
 import java.util.Collection;
 import java.util.List;
@@ -26,10 +34,16 @@ public final class ChallengeBlockListener implements Listener {
     private static final String STORAGE_ERROR =
             "§cDer Block konnte nicht sicher gespeichert werden. Bitte versuche es erneut.";
 
+    private final Plugin plugin;
     private final PlacedBlockRepository repository;
     private final Logger logger;
 
-    public ChallengeBlockListener(PlacedBlockRepository repository, Logger logger) {
+    public ChallengeBlockListener(
+            Plugin plugin,
+            PlacedBlockRepository repository,
+            Logger logger
+    ) {
+        this.plugin = plugin;
         this.repository = repository;
         this.logger = logger;
     }
@@ -90,6 +104,77 @@ public final class ChallengeBlockListener implements Listener {
             event.setCancelled(true);
             logger.log(Level.SEVERE, "Cancelled a world-caused block destruction after a storage failure", exception);
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onLeavesDecay(LeavesDecayEvent event) {
+        if (repository.isTracked(BlockPosition.from(event.getBlock()))) {
+            return;
+        }
+
+        // LeavesDecayEvent cannot disable drops independently. Cancel the
+        // Vanilla decay and remove the natural leaf without loot instead.
+        event.setCancelled(true);
+        event.getBlock().setType(Material.AIR, false);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onProjectileLaunch(ProjectileLaunchEvent event) {
+        if (!(event.getEntity() instanceof AbstractArrow arrow)
+                || !(arrow.getShooter() instanceof BlockProjectileSource source)
+                || repository.isTracked(BlockPosition.from(source.getBlock()))) {
+            return;
+        }
+
+        // Natural dispenser traps may still fire and hurt players, but their
+        // arrows must not become an item source outside allowed containers.
+        arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onBlockDispense(BlockDispenseEvent event) {
+        if (event.getBlock().getType() != Material.DISPENSER
+                || repository.isTracked(BlockPosition.from(event.getBlock()))) {
+            return;
+        }
+
+        Material dispensedMaterial = event.getItem().getType();
+        var world = event.getBlock().getWorld();
+        var dispenserLocation = event.getBlock().getLocation().add(0.5, 0.5, 0.5);
+        plugin.getServer().getScheduler().runTask(plugin, () -> {
+            world.getNearbyEntities(
+                    dispenserLocation,
+                    3.0,
+                    3.0,
+                    3.0,
+                    entity -> entity.getTicksLived() <= 3
+                            && (
+                                    isArrow(dispensedMaterial)
+                                            && entity instanceof AbstractArrow
+                                    || entity instanceof Item item
+                                            && isDispensedItem(item, dispensedMaterial)
+                            )
+            ).forEach(entity -> {
+                if (entity instanceof AbstractArrow arrow) {
+                    arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+                } else {
+                    entity.remove();
+                }
+            });
+        });
+    }
+
+    private static boolean isArrow(Material material) {
+        return material == Material.ARROW
+                || material == Material.SPECTRAL_ARROW
+                || material == Material.TIPPED_ARROW;
+    }
+
+    private static boolean isDispensedItem(Item item, Material dispensedMaterial) {
+        Material droppedMaterial = item.getItemStack().getType();
+        return droppedMaterial == dispensedMaterial
+                || dispensedMaterial == Material.WATER_BUCKET
+                        && droppedMaterial == Material.BUCKET;
     }
 
     private void persistPlacement(BlockPlaceEvent event, Collection<BlockPosition> positions) {
