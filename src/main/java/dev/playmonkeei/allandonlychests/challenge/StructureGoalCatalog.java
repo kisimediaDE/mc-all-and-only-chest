@@ -91,22 +91,14 @@ public final class StructureGoalCatalog {
             if (distinctKeys != categoryGoals.size()) {
                 throw new IllegalStateException("Duplicate goal key in " + category.id());
             }
+            int expectedCount = expectedGoalCount(category);
+            if (categoryGoals.size() != expectedCount) {
+                throw new IllegalStateException(
+                        "Expected " + expectedCount + " goals for " + category.id()
+                                + ", found " + categoryGoals.size()
+                );
+            }
             goals.put(category, List.copyOf(categoryGoals));
-        }
-
-        int trialGoalCount = goals.get(StructureCategory.TRIAL_CHAMBERS).size();
-        if (trialGoalCount != 64) {
-            throw new IllegalStateException(
-                    "Expected 64 Trial Chambers goals like the original plugin, found "
-                            + trialGoalCount
-            );
-        }
-        int bastionGoalCount = goals.get(StructureCategory.BASTION_REMNANT).size();
-        if (bastionGoalCount != 66) {
-            throw new IllegalStateException(
-                    "Expected 66 Bastion goals for Minecraft 26.1/26.2, found "
-                            + bastionGoalCount
-            );
         }
         return new StructureGoalCatalog(goals);
     }
@@ -239,5 +231,29 @@ public final class StructureGoalCatalog {
                         "Pfeil der Langsamkeit"
                 )
         );
+    }
+
+    private static int expectedGoalCount(StructureCategory category) {
+        return switch (category) {
+            case ANCIENT_CITY -> 33;
+            case BURIED_TREASURE -> 17;
+            case DESERT_PYRAMID -> 19;
+            case END_CITY -> 26;
+            case NETHER_FORTRESS -> 14;
+            case IGLOO -> 8;
+            case JUNGLE_TEMPLE -> 14;
+            case OCEAN_RUIN -> 17;
+            case PILLAGER_OUTPOST -> 13;
+            case RUINED_PORTAL -> 26;
+            case SHIPWRECK -> 36;
+            case STRONGHOLD -> 27;
+            case MINESHAFT ->
+                    Material.matchMaterial("minecraft:music_disc_bounce") == null ? 21 : 22;
+            case VILLAGE -> 89;
+            case WOODLAND_MANSION -> 25;
+            case MONSTER_ROOM -> 26;
+            case BASTION_REMNANT -> 66;
+            case TRIAL_CHAMBERS -> 64;
+        };
     }
 }

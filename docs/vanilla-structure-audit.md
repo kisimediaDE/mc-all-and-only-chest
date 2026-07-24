@@ -1,6 +1,6 @@
 # Vanilla structure audit for Minecraft 26.2
 
-Audit date: 2026-07-23
+Audit date: 2026-07-24
 
 This catalog was derived from the data bundled in Mojang's official server
 JARs. It does not rely on a wiki or on release-note wording.
@@ -45,6 +45,44 @@ This is the same category set as the original plugin's 1.21.4 source.
 Consequently, the number of chest-bearing structure categories added in 26.1,
 26.1.1, 26.1.2, or 26.2 is **zero**.
 
+## Semantic item audit
+
+The item catalog was also checked against the contents and loot functions of
+all 55 mapped tables in 26.1.2 and 26.2. This includes material-changing
+functions such as book enchantment and exploration maps, plus the Trial
+Spawner reward tables used by Trial Chambers.
+
+| Category | Goals in 26.2 |
+| --- | ---: |
+| Ancient City | 33 |
+| Buried Treasure | 17 |
+| Desert Pyramid | 19 |
+| End City | 26 |
+| Nether Fortress | 14 |
+| Igloo | 8 |
+| Jungle Temple | 14 |
+| Ocean Ruin | 17 |
+| Pillager Outpost | 13 |
+| Ruined Portal | 26 |
+| Shipwreck | 36 |
+| Stronghold | 27 |
+| Mineshaft | 22 |
+| Village | 89 |
+| Woodland Mansion | 25 |
+| Monster Room | 26 |
+| Bastion Remnant | 66 |
+| Trial Chambers | 64 |
+
+The 26.1.2 and 26.2 semantic sets are identical except for
+`music_disc_bounce`, which is a 26.2 Mineshaft goal. Unavailable materials are
+filtered when the catalog is loaded, so the 26.1 Mineshaft has 21 goals.
+
+This audit corrected three concrete catalog errors: End City now includes the
+Diamond Pickaxe, Jungle Temple requires an Enchanted Book instead of a normal
+Book, and Stronghold includes the Enchanted Book in addition to normal books.
+The reproducible checker is `scripts/audit-structure-goals.mjs`. Runtime
+startup assertions also verify every category's expected goal count.
+
 ## Explicit exclusions and edge cases
 
 - `spawn_bonus_chest` is a world-start option, not a structure.
@@ -60,6 +98,10 @@ Consequently, the number of chest-bearing structure categories added in 26.1,
 - Trial Chambers contain ordinary containers in addition to vault and trial
   spawner rewards. Their complete Vanilla loot-table family remains one
   challenge category, matching the original plugin.
+- Ominous Trial Spawner overhead projectiles use
+  `spawners/trial_chamber/items_to_drop_when_ominous`. Lingering potions and
+  fire charges from that mechanic are not collectible reward goals, matching
+  the original plugin.
 - Bastion item and enchantment semantics are identical in 26.1, 26.1.1,
   26.1.2, and 26.2. The updated category contains 53 base goals and 13
   separately enchanted variants. Compared with the original 1.21.4 plugin,

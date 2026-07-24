@@ -81,6 +81,7 @@ end_city:
   - diamond_helmet
   - diamond_horse_armor
   - diamond_leggings
+  - diamond_pickaxe
   - diamond_shovel
   - diamond_spear
   - diamond_sword
@@ -125,11 +126,11 @@ igloo:
 jungle_temple:
   - bamboo
   - bone
-  - book
   - copper_horse_armor
   - diamond
   - diamond_horse_armor
   - emerald
+  - enchanted_book
   - gold_ingot
   - golden_horse_armor
   - iron_horse_armor
@@ -242,6 +243,7 @@ stronghold:
   - copper_horse_armor
   - diamond
   - diamond_horse_armor
+  - enchanted_book
   - ender_pearl
   - eye_armor_trim_smithing_template
   - gold_ingot
