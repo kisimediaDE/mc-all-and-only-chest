@@ -1,98 +1,139 @@
 # All and Only Chests – Arbeitsliste
 
-Stand: 23. Juli 2026
+Stand: 24. Juli 2026
 
 ## Nächster Schritt
 
 - [ ] Prüfungskammer vollständig testen:
-  - [ ] normale Trial Spawner
-  - [ ] ominöse Trial Spawner
-  - [ ] normale Vaults
-  - [ ] ominöse Vaults
-  - [ ] Trial Keys und Ominous Trial Keys
-  - [ ] Tränke und Effektpfeile korrekt unterscheiden
-  - [ ] verzauberte Diamantaxt korrekt erkennen
+  - [x] normale Strukturkiste: Pfeil und Holzaxt erkannt, Quelle einmal gezählt
+  - [x] normaler Trial Spawner: drei Brote als ein Ziel erkannt und Quelle gezählt
+  - [x] ominöser Trial Spawner: Ofenkartoffeln erkannt und Quelle gezählt
+  - [x] normaler Vault: Trial Key verbraucht, Armbrust und Eisenbarren erkannt
+  - [x] ominöser Vault: mit kontrolliertem Schlüssel geöffnet; Windkugel und
+        Fluss-Rüstungsbesatz erkannt
+  - [x] Trial Key natürlich aus normalen Spawnern erhalten; zwei Keys zählen als ein Ziel
+  - [ ] Ominous Trial Key natürlich erhalten
+  - [x] Regeneration, Stärke und Schnelligkeit als getrennte Trankziele erkannt
+  - [x] Vergiftung und Langsamkeit als getrennte Effektpfeilziele erkannt
+  - [x] verzauberte und unverzauberte Diamantaxt als getrennte Ziele erkannt
+  - [x] alle Trank-, Effektpfeil- und Axt-Sonderziele in der GUI grün dargestellt
   - [ ] eindeutigen Quellenzähler für Vaults und Spawner prüfen
   - [ ] regulären Abschluss aller 64 Ziele prüfen
+  - [x] kontrollierten Testabschluss auf 64/64 mit ausgeblendeter Sidebar und
+        abgeschlossener GUI geprüft
+  - [x] aktiven Stand mit 22/64 Items und 11 Quellen nach Neustart wiederhergestellt
 
 ## Kritische Gameplay-Punkte
 
-- [ ] Bastionsruine vollständig mit dem Original und Minecraft 26.1/26.2
+- [x] Bastionsruine vollständig mit dem Original und Minecraft 26.1/26.2
       abgleichen.
-  - [ ] normale und verzauberte Gegenstandsvarianten getrennt abbilden
-  - [ ] Diamantspeer und Eisenkette aus 26.2 prüfen
-  - [ ] endgültige Zielanzahl bestimmen und absichern
-- [ ] Loot-Funktionen aller übrigen Struktur-Tabellen semantisch prüfen.
-  - [ ] verzauberte Bücher
-  - [ ] verzauberte Ausrüstung
-  - [ ] Tränke und Effektpfeile
-  - [ ] besondere Komponenten und Itemzustände
+  - [x] normale und verzauberte Gegenstandsvarianten getrennt abgebildet
+  - [x] Diamantspeer und Eisenkette in 26.1, 26.1.1, 26.1.2 und 26.2 geprüft
+  - [x] 66 Ziele bestimmt und beim Pluginstart abgesichert
+  - [x] Bastionsziele und Sondervarianten im Spiel getestet
+    - [x] natürliche Kiste erkannt; sechs Grundziele und eine Quelle verbucht
+    - [x] normale Varianten von Goldhelm und Goldbeinschutz erkannt
+    - [x] verzauberten Goldhelm getrennt von normalem Goldhelm erkannt
+    - [x] Diamantspeer normal und verzaubert getrennt erkannt
+    - [x] unverzauberte Diamantspitzhacke ignoriert und verzauberte erkannt
+- [x] Loot-Funktionen aller Struktur-Tabellen für 26.1.2 und 26.2 semantisch
+      geprüft und durch ein reproduzierbares Audit abgesichert.
+  - [x] verzauberte Bücher
+  - [x] verzauberte Ausrüstung
+  - [x] Tränke und Effektpfeile
+  - [x] besondere Komponenten und Itemzustände
+  - [x] Endsiedlung: fehlende Diamantspitzhacke ergänzt
+  - [x] Dschungelpyramide: Buch zu verzaubertem Buch korrigiert
+  - [x] Festung: fehlendes verzaubertes Buch ergänzt
 - [ ] Indirekte Itemquellen prüfen und entsprechend der Challenge sperren.
   - [ ] Angeln
   - [ ] Item Frames
   - [ ] Gemälde und andere Hanging Entities
-  - [ ] Blattverfall
+  - [x] Blattverfall
+    - [x] natürliche Blätter technisch auf Verfall ohne Drops umgestellt
+    - [x] im Spiel geprüft: Blätter verschwinden, aber Setzlinge, Stöcke und
+          Äpfel werden nicht fallengelassen
   - [ ] von lebenden Entities fallengelassene Gegenstände
   - [ ] natürliche gemeißelte Bücherregale
   - [ ] natürliche Crafter
   - [ ] Scheren
   - [ ] Bürsten und Archäologie
+  - [x] natürliche verzierte Krüge in Prüfungskammern: kein Krug-, Scherben-
+        oder Inhaltsdrop und kein Strukturfortschritt
 
 ## Container- und Persistenz-Edge-Cases
 
 - [ ] Doppelkisten als genau eine besuchte Kiste testen.
 - [ ] Kistenloren testen.
-- [ ] Fässer testen.
+- [x] natürliches Prüfungskammer-Fass erkannt und genau einmal gezählt.
 - [ ] bereits generierte, geöffnete oder geleerte Strukturkisten testen.
-- [ ] erkannte Strukturkisten nach Serverneustart testen.
+- [x] erkanntes Prüfungskammer-Fass nach Serverneustart erneut geöffnet.
 - [ ] Container nach Entladen und erneutem Laden des Chunks testen.
 - [ ] natürliche leere Container testen.
 - [ ] Abbau einer gefüllten Strukturkiste auf mögliche Drops prüfen.
 - [ ] Hopper und Hopper-Loren mit allen Containerarten testen.
+- [ ] natürliche Prüfungskammer-Dispenser:
+  - [ ] manuelles Öffnen bleibt gesperrt
+  - [ ] ausgelöste Fallen verändern weder Items noch Kistenzähler
+- [ ] natürlicher leerer Entsorgungs-Hopper in Prüfungskammern bleibt gesperrt
+      und zählt nicht als Loot-Quelle.
+- [ ] selbst platzierte Dispenser und Hopper bleiben normal benutzbar.
+- [x] natürliche Dispenser-Fallen schießen weiterhin, frisch abgefeuerte
+      Pfeile bleiben aber in Wand oder Boden stecken und sind nicht aufhebbar.
+- [x] direktes Öffnen eines natürlichen Dschungelpyramiden-Dispensers bleibt
+      gesperrt und verändert weder Item- noch Quellenfortschritt.
 - [ ] Doppelkiste aus einer natürlichen und einer platzierten Hälfte testen.
-- [ ] eindeutigen Kistenzähler nach Serverneustart prüfen.
+- [x] eindeutigen Kistenzähler nach Serverneustart geprüft.
 
 ## Fehlende Challenge-Funktionen
 
-- [ ] Gesamtsieg nach Abschluss aller 18 Kategorien implementieren.
-  - [ ] dauerhaften gewonnenen Status speichern
-  - [ ] Broadcast
-  - [ ] Titel oder Toast
-  - [ ] Sound
-- [ ] `/structures` implementieren.
-  - [ ] Gesamtfortschritt anzeigen
-  - [ ] aktive Struktur anzeigen
-  - [ ] abgeschlossene Strukturen auflisten
-  - [ ] offene Strukturen auflisten
+- [x] Gesamtsieg nach Abschluss aller 18 Kategorien implementieren.
+  - [x] dauerhaften gewonnenen Status speichern
+  - [x] Broadcast
+  - [x] Titel und Untertitel
+  - [x] Sound
+  - [x] `/structures` zeigt nach dem Sieg den Abschlussstatus
+  - [x] kontrollierten 18/18-Übergang und Einmaligkeit nach Neustart prüfen
+- [x] `/structures` implementiert und im Spiel geprüft.
+  - [x] Gesamtfortschritt anzeigen
+  - [x] aktive Struktur anzeigen
+  - [x] abgeschlossene Strukturen auflisten
+  - [x] offene Strukturen auflisten
 - [ ] Verhalten abgeschlossener Strukturen vollständig testen.
-  - [ ] Container bleiben gesperrt
-  - [ ] GUI-Details bleiben einsehbar
-  - [ ] Zustand bleibt nach Neustart erhalten
-  - [ ] nächste Struktur kann ausgewählt werden
-  - [ ] Abschluss der letzten Struktur funktioniert
+  - [x] Container bleiben gesperrt
+  - [x] GUI-Details bleiben einsehbar
+  - [x] Zustand von Iglu und Prüfungskammern bleibt nach Neustart erhalten
+  - [x] nächste Struktur kann nach einem Abschluss ausgewählt werden
+  - [x] Abschluss der letzten Struktur funktioniert
 
 ## Struktur-Testmatrix
 
-Das Iglu wurde als Smoke-Test geprüft, aber noch nicht regulär bis 8/8
-durchgespielt. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft.
+Das Iglu wurde mit vier eindeutigen Kellertruhen bis 7/8 über natürliches
+Loot geprüft. Der letzte Smaragd wurde kontrolliert in eine bereits erkannte
+Kellertruhe gelegt. Fundmeldung, 8/8-Abschluss und Ausblenden der Sidebar
+funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft.
 
 - [ ] Antike Stadt
 - [ ] Vergrabener Schatz
 - [ ] Wüstenpyramide
-- [ ] Endsiedlung
+- [x] Endsiedlung: drei natürliche Kisten, ergänzte Diamantspitzhacke und
+      kontrollierter 26/26-Abschluss
 - [ ] Netherfestung
-- [ ] Iglu vollständig
-- [ ] Dschungelpyramide
+- [x] Iglu: Loot-Fortschritt und kontrollierter 8/8-Abschluss
+- [x] Dschungelpyramide: natürlicher Loot aus beiden Kisten, verzaubertes
+      Buch, Dispenser-Regeln und kontrollierter 14/14-Abschluss
 - [ ] Ozeanruine
 - [ ] Plünderer-Außenposten
 - [ ] Ruinenportal
 - [ ] Schiffswrack
-- [ ] Festung
+- [x] Festung: beide Bibliothekskisten, gewöhnliche Kiste, normales und
+      verzaubertes Buch getrennt sowie kontrollierter 27/27-Abschluss
 - [ ] Minenstollen
 - [ ] Dorf mit unterschiedlichen Berufen und Biomen
 - [ ] Waldanwesen
 - [ ] Verlies
-- [ ] Bastionsruine
+- [x] Bastionsruine: 66er-Katalog, Sondervarianten, GUI und kontrollierter
+      Abschluss
 - [ ] Prüfungskammern
 
 ## Kompatibilität und Qualität
@@ -110,7 +151,7 @@ durchgespielt. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft.
   - [ ] Reset
   - [ ] eindeutige Quellenzählung
   - [ ] Item-Matcher
-  - [ ] Kataloggrößen für 26.1 und 26.2
+  - [x] Kataloggrößen für 26.1 und 26.2 beim Pluginstart abgesichert
   - [ ] Trial- und Bastion-Sonderfälle
 - [ ] Sidebar auf die aktuelle Component-API umstellen.
 - [ ] README vervollständigen.
