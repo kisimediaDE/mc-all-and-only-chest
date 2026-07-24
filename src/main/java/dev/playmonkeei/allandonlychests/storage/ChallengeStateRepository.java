@@ -223,6 +223,73 @@ public final class ChallengeStateRepository implements AutoCloseable {
         }
     }
 
+    /**
+     * Resets one structure without touching any other structure progress or
+     * the player-placed block index. If the structure is currently active, it
+     * remains selected with zero goals and zero visited sources.
+     */
+    public StructureResetResult resetStructureProgress(StructureCategory category) {
+        requireOpen();
+
+        int foundGoalCount = foundGoals.get(category).size();
+        boolean wasCompleted = completedStructures.contains(category);
+        boolean challengeReopened = challengeWon;
+        int removedSources;
+
+        try {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "DELETE FROM found_structure_goals WHERE category_id = ?"
+            )) {
+                statement.setString(1, category.id());
+                statement.executeUpdate();
+            }
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "DELETE FROM completed_structures WHERE category_id = ?"
+            )) {
+                statement.setString(1, category.id());
+                statement.executeUpdate();
+            }
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "DELETE FROM visited_structure_sources WHERE category_id = ?"
+            )) {
+                statement.setString(1, category.id());
+                removedSources = statement.executeUpdate();
+            }
+            if (challengeWon) {
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "DELETE FROM challenge_state WHERE state_key = ?"
+                )) {
+                    statement.setString(1, CHALLENGE_WON_KEY);
+                    statement.executeUpdate();
+                }
+            }
+            connection.commit();
+
+            foundGoals.get(category).clear();
+            completedStructures.remove(category);
+            if (activeStructure == category) {
+                openedSources = 0;
+            }
+            challengeWon = false;
+            return new StructureResetResult(
+                    foundGoalCount,
+                    removedSources,
+                    wasCompleted,
+                    challengeReopened,
+                    activeStructure == category
+            );
+        } catch (SQLException exception) {
+            rollback();
+            throw new IllegalStateException(
+                    "Failed to reset structure progress for " + category.id(),
+                    exception
+            );
+        } finally {
+            restoreAutoCommit();
+        }
+    }
+
     public ProgressUpdate recordFoundGoals(
             StructureCategory category,
             Collection<StructureGoal> matchedGoals,
@@ -460,6 +527,15 @@ public final class ChallengeStateRepository implements AutoCloseable {
             boolean challengeCompletedNow,
             int foundCount,
             int totalCount
+    ) {
+    }
+
+    public record StructureResetResult(
+            int removedGoalCount,
+            int removedSourceCount,
+            boolean wasCompleted,
+            boolean challengeReopened,
+            boolean remainsActive
     ) {
     }
 }

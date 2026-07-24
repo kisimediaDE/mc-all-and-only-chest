@@ -12,8 +12,12 @@ commands:
     permission: allandonlychests.command.gui
   structurecomplete:
     description: Markiert eine Struktur zu Testzwecken als abgeschlossen.
-    usage: /structurecomplete <Kategorie>
+    usage: /structurecomplete <Kategorie|all>
     permission: allandonlychests.command.structurecomplete
+  structurereset:
+    description: Setzt den Fortschritt einer Struktur nach Bestätigung zurück.
+    usage: /structurereset <Kategorie> confirm
+    permission: allandonlychests.command.structurereset
   structures:
     description: Zeigt den Gesamtfortschritt aller Strukturen.
     usage: /structures
@@ -33,6 +37,9 @@ permissions:
     default: true
   allandonlychests.command.structurecomplete:
     description: Erlaubt das testweise Abschließen einer Struktur.
+    default: op
+  allandonlychests.command.structurereset:
+    description: Erlaubt das gezielte Zurücksetzen einer Struktur.
     default: op
   allandonlychests.command.structures:
     description: Erlaubt das Anzeigen des Gesamtfortschritts.

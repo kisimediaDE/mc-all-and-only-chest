@@ -105,6 +105,10 @@ Stand: 24. Juli 2026
   - [x] aktive Struktur anzeigen
   - [x] abgeschlossene Strukturen auflisten
   - [x] offene Strukturen auflisten
+- [x] Admin-Testbefehle im Spiel prüfen.
+  - [x] `/structurecomplete all` schließt alle offenen Strukturen ab
+  - [x] `/structurereset <Kategorie> confirm` setzt nur eine Struktur zurück
+  - [x] gezielter Reset öffnet einen gesetzten Gesamtsieg wieder
 - [ ] Verhalten abgeschlossener Strukturen vollständig testen.
   - [x] Container bleiben gesperrt
   - [x] GUI-Details bleiben einsehbar

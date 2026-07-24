@@ -86,8 +86,11 @@ The current milestone provides:
   loot, including the original plugin's potion, tipped-arrow, and enchanted
   diamond-axe distinctions;
 - hopper extraction blocked for recognized structure containers;
-- an OP-only `/structurecomplete <category>` command for testing completion
-  transitions without grinding random loot;
+- an OP-only `/structurecomplete <category|all>` command for testing individual
+  and overall completion transitions without grinding random loot;
+- a confirmation-protected OP-only `/structurereset <category> confirm`
+  command that clears only one structure's goals, completion state, and
+  visited-source counter without changing the world;
 - a confirmation-protected OP-only `/reset confirm` command that clears all
   plugin progress and placed-block tracking without deleting the world;
 - an explicit mapping of all 55 Vanilla structure loot tables to those

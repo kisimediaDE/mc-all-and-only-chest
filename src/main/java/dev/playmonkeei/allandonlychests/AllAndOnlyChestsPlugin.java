@@ -2,6 +2,7 @@ package dev.playmonkeei.allandonlychests;
 
 import dev.playmonkeei.allandonlychests.challenge.StructureGoalCatalog;
 import dev.playmonkeei.allandonlychests.commands.StructureCompleteCommand;
+import dev.playmonkeei.allandonlychests.commands.StructureResetCommand;
 import dev.playmonkeei.allandonlychests.commands.StructuresCommand;
 import dev.playmonkeei.allandonlychests.commands.ResetCommand;
 import dev.playmonkeei.allandonlychests.listeners.ChallengeBlockListener;
@@ -100,6 +101,16 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
                 );
         getCommand("structurecomplete").setExecutor(structureCompleteCommand);
         getCommand("structurecomplete").setTabCompleter(structureCompleteCommand);
+
+        StructureResetCommand structureResetCommand =
+                new StructureResetCommand(
+                        challengeStateRepository,
+                        challengeSidebar,
+                        getLogger()
+                );
+        getCommand("structurereset").setExecutor(structureResetCommand);
+        getCommand("structurereset").setTabCompleter(structureResetCommand);
+
         getCommand("structures").setExecutor(
                 new StructuresCommand(challengeStateRepository, structureGoalCatalog)
         );

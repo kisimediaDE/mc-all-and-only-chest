@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Stream;
 
 /**
  * OP-only development command for testing the completion transition.
@@ -46,11 +47,16 @@ public final class StructureCompleteCommand implements CommandExecutor, TabCompl
             @NotNull String[] args
     ) {
         if (args.length != 1) {
-            sender.sendMessage("§cVerwendung: /structurecomplete <Kategorie>");
+            sender.sendMessage("§cVerwendung: /structurecomplete <Kategorie|all>");
             return true;
         }
 
         String requestedId = args[0].toLowerCase(Locale.ROOT);
+        if (requestedId.equals("all")) {
+            completeAll(sender);
+            return true;
+        }
+
         StructureCategory category = StructureCategory.fromId(requestedId).orElse(null);
         if (category == null) {
             sender.sendMessage("§cUnbekannte Struktur-Kategorie: §f" + args[0]);
@@ -92,6 +98,46 @@ public final class StructureCompleteCommand implements CommandExecutor, TabCompl
         return true;
     }
 
+    private void completeAll(CommandSender sender) {
+        int newlyCompleted = 0;
+        int alreadyCompleted = 0;
+        boolean challengeCompletedNow = false;
+
+        for (StructureCategory category : StructureCategory.values()) {
+            if (stateRepository.isCompleted(category)) {
+                alreadyCompleted++;
+                continue;
+            }
+
+            List<StructureGoal> allGoals = goalCatalog.goalsFor(category);
+            ChallengeStateRepository.ProgressUpdate update =
+                    stateRepository.recordFoundGoals(category, allGoals, allGoals);
+            if (update.completedNow()) {
+                newlyCompleted++;
+            }
+            if (update.challengeCompletedNow()) {
+                challengeCompletedNow = true;
+            }
+        }
+
+        sidebar.refreshAll();
+        if (newlyCompleted == 0) {
+            sender.sendMessage("§aAlle Strukturen sind bereits abgeschlossen.");
+            return;
+        }
+
+        sender.sendMessage(
+                "§aTestabschluss gesetzt: §f" + newlyCompleted
+                        + " §aStrukturen neu abgeschlossen."
+        );
+        sender.sendMessage(
+                "§7Bereits abgeschlossen: " + alreadyCompleted
+        );
+        if (challengeCompletedNow) {
+            ChallengeVictoryNotifier.announce();
+        }
+    }
+
     @Override
     public @Nullable List<String> onTabComplete(
             @NotNull CommandSender sender,
@@ -104,9 +150,12 @@ public final class StructureCompleteCommand implements CommandExecutor, TabCompl
         }
 
         String prefix = args[0].toLowerCase(Locale.ROOT);
-        return Arrays.stream(StructureCategory.values())
-                .filter(category -> !stateRepository.isCompleted(category))
-                .map(StructureCategory::id)
+        return Stream.concat(
+                        Stream.of("all"),
+                        Arrays.stream(StructureCategory.values())
+                                .filter(category -> !stateRepository.isCompleted(category))
+                                .map(StructureCategory::id)
+                )
                 .filter(id -> id.startsWith(prefix))
                 .toList();
     }
