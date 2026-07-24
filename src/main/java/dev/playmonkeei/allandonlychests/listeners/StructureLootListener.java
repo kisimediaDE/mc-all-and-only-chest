@@ -30,6 +30,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockDispenseLootEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.Inventory;
@@ -100,6 +101,10 @@ public final class StructureLootListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInventoryOpen(InventoryOpenEvent event) {
+        if (event.getInventory().getType() == InventoryType.ENDER_CHEST) {
+            return;
+        }
+
         InventoryHolder holder = event.getInventory().getHolder();
         if (holder == null || !(event.getPlayer() instanceof Player player)) {
             return;

@@ -70,6 +70,12 @@ Stand: 24. Juli 2026
 - [x] erkanntes Prüfungskammer-Fass nach Serverneustart erneut geöffnet.
 - [ ] Container nach Entladen und erneutem Laden des Chunks testen.
 - [ ] natürliche leere Container testen.
+- [x] Endertruhe bleibt mit Struktur-Items und nach Strukturwechsel frei zugänglich.
+- [x] Endertruhen-Abbau:
+  - [x] natürlich generiert ohne Silk Touch: kein Drop
+  - [x] natürlich generiert mit Silk Touch: kein Drop
+  - [x] selbst platziert ohne Silk Touch: acht Obsidian
+  - [x] selbst platziert mit Silk Touch: Endertruhe
 - [ ] Abbau einer gefüllten Strukturkiste auf mögliche Drops prüfen.
 - [ ] Hopper und Hopper-Loren mit allen Containerarten testen.
 - [ ] natürliche Prüfungskammer-Dispenser:
