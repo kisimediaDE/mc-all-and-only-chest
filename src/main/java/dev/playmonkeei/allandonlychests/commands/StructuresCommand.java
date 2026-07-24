@@ -54,6 +54,9 @@ public final class StructuresCommand implements CommandExecutor {
                 "§eGesamtfortschritt: §f" + completed.size()
                         + "§7/§f" + StructureCategory.values().length
         );
+        if (stateRepository.hasWon()) {
+            sender.sendMessage("§a§lStatus: CHALLENGE ABGESCHLOSSEN!");
+        }
         if (active.isPresent()) {
             StructureCategory category = active.get();
             sender.sendMessage(

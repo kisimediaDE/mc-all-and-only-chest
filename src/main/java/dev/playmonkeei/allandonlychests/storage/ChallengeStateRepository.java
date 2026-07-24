@@ -34,6 +34,7 @@ public final class ChallengeStateRepository implements AutoCloseable {
             """;
 
     private static final String ACTIVE_STRUCTURE_KEY = "active_structure";
+    private static final String CHALLENGE_WON_KEY = "challenge_won";
     private static final String CREATE_FOUND_GOALS_TABLE = """
             CREATE TABLE IF NOT EXISTS found_structure_goals (
                 category_id TEXT NOT NULL,
@@ -61,6 +62,7 @@ public final class ChallengeStateRepository implements AutoCloseable {
     private Connection connection;
     private StructureCategory activeStructure;
     private int openedSources;
+    private boolean challengeWon;
 
     public ChallengeStateRepository(Path databasePath) {
         this.databasePath = databasePath;
@@ -88,6 +90,7 @@ public final class ChallengeStateRepository implements AutoCloseable {
             activeStructure = readActiveStructure().orElse(null);
             openedSources = readVisitedSourceCount(activeStructure);
             loadProgress();
+            challengeWon = readChallengeWon();
         } catch (IOException | SQLException | ClassNotFoundException exception) {
             close();
             throw new IllegalStateException("Failed to open " + databasePath, exception);
@@ -186,6 +189,11 @@ public final class ChallengeStateRepository implements AutoCloseable {
         return foundGoals.get(category).size();
     }
 
+    public boolean hasWon() {
+        requireOpen();
+        return challengeWon;
+    }
+
     /**
      * Deletes all structure selection and progress data without touching the
      * world or the placed-block table.
@@ -204,6 +212,7 @@ public final class ChallengeStateRepository implements AutoCloseable {
 
             activeStructure = null;
             openedSources = 0;
+            challengeWon = false;
             foundGoals.values().forEach(Set::clear);
             completedStructures.clear();
         } catch (SQLException exception) {
@@ -221,7 +230,13 @@ public final class ChallengeStateRepository implements AutoCloseable {
     ) {
         requireOpen();
         if (matchedGoals.isEmpty() || completedStructures.contains(category)) {
-            return new ProgressUpdate(List.of(), false, foundCount(category), allGoals.size());
+            return new ProgressUpdate(
+                    List.of(),
+                    false,
+                    false,
+                    foundCount(category),
+                    allGoals.size()
+            );
         }
 
         Set<String> existing = foundGoals.get(category);
@@ -230,7 +245,13 @@ public final class ChallengeStateRepository implements AutoCloseable {
                 .distinct()
                 .toList();
         if (newGoals.isEmpty()) {
-            return new ProgressUpdate(List.of(), false, existing.size(), allGoals.size());
+            return new ProgressUpdate(
+                    List.of(),
+                    false,
+                    false,
+                    existing.size(),
+                    allGoals.size()
+            );
         }
 
         String insertGoal = """
@@ -242,9 +263,17 @@ public final class ChallengeStateRepository implements AutoCloseable {
                 VALUES (?)
                 """;
         String clearActive = "DELETE FROM challenge_state WHERE state_key = ?";
+        String markChallengeWon = """
+                INSERT INTO challenge_state (state_key, state_value)
+                VALUES (?, ?)
+                ON CONFLICT(state_key) DO UPDATE SET state_value = excluded.state_value
+                """;
 
         int resultingCount = existing.size() + newGoals.size();
         boolean completesNow = resultingCount == allGoals.size();
+        boolean completesChallengeNow = completesNow
+                && !challengeWon
+                && completedStructures.size() + 1 == StructureCategory.values().length;
 
         try {
             connection.setAutoCommit(false);
@@ -268,6 +297,14 @@ public final class ChallengeStateRepository implements AutoCloseable {
                         statement.executeUpdate();
                     }
                 }
+                if (completesChallengeNow) {
+                    try (PreparedStatement statement =
+                                 connection.prepareStatement(markChallengeWon)) {
+                        statement.setString(1, CHALLENGE_WON_KEY);
+                        statement.setString(2, Boolean.TRUE.toString());
+                        statement.executeUpdate();
+                    }
+                }
             }
 
             connection.commit();
@@ -278,9 +315,13 @@ public final class ChallengeStateRepository implements AutoCloseable {
                     activeStructure = null;
                 }
             }
+            if (completesChallengeNow) {
+                challengeWon = true;
+            }
             return new ProgressUpdate(
                     List.copyOf(newGoals),
                     completesNow,
+                    completesChallengeNow,
                     resultingCount,
                     allGoals.size()
             );
@@ -320,6 +361,16 @@ public final class ChallengeStateRepository implements AutoCloseable {
             statement.setString(1, category.id());
             try (ResultSet result = statement.executeQuery()) {
                 return result.next() ? result.getInt("source_count") : 0;
+            }
+        }
+    }
+
+    private boolean readChallengeWon() throws SQLException {
+        String sql = "SELECT state_value FROM challenge_state WHERE state_key = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, CHALLENGE_WON_KEY);
+            try (ResultSet result = statement.executeQuery()) {
+                return result.next() && Boolean.parseBoolean(result.getString("state_value"));
             }
         }
     }
@@ -390,6 +441,7 @@ public final class ChallengeStateRepository implements AutoCloseable {
             connection = null;
             activeStructure = null;
             openedSources = 0;
+            challengeWon = false;
             foundGoals.clear();
             completedStructures.clear();
         }
@@ -405,6 +457,7 @@ public final class ChallengeStateRepository implements AutoCloseable {
     public record ProgressUpdate(
             List<StructureGoal> newGoals,
             boolean completedNow,
+            boolean challengeCompletedNow,
             int foundCount,
             int totalCount
     ) {

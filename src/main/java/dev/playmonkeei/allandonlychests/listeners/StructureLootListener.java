@@ -7,6 +7,7 @@ import dev.playmonkeei.allandonlychests.storage.BlockPosition;
 import dev.playmonkeei.allandonlychests.storage.ChallengeStateRepository;
 import dev.playmonkeei.allandonlychests.storage.PlacedBlockRepository;
 import dev.playmonkeei.allandonlychests.ui.ChallengeSidebar;
+import dev.playmonkeei.allandonlychests.ui.ChallengeVictoryNotifier;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -247,12 +248,14 @@ public final class StructureLootListener implements Listener {
                         category.displayName() + " abgeschlossen!",
                         NamedTextColor.GOLD
                 ));
-                player.playSound(
-                        player.getLocation(),
-                        Sound.UI_TOAST_CHALLENGE_COMPLETE,
-                        1.0f,
-                        1.0f
-                );
+                if (!update.challengeCompletedNow()) {
+                    player.playSound(
+                            player.getLocation(),
+                            Sound.UI_TOAST_CHALLENGE_COMPLETE,
+                            1.0f,
+                            1.0f
+                    );
+                }
             } else {
                 player.playSound(
                         player.getLocation(),
@@ -261,6 +264,9 @@ public final class StructureLootListener implements Listener {
                         1.0f
                 );
             }
+        }
+        if (update.challengeCompletedNow()) {
+            ChallengeVictoryNotifier.announce();
         }
     }
 

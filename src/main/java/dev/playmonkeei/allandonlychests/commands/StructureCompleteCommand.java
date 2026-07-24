@@ -5,6 +5,7 @@ import dev.playmonkeei.allandonlychests.challenge.StructureGoal;
 import dev.playmonkeei.allandonlychests.challenge.StructureGoalCatalog;
 import dev.playmonkeei.allandonlychests.storage.ChallengeStateRepository;
 import dev.playmonkeei.allandonlychests.ui.ChallengeSidebar;
+import dev.playmonkeei.allandonlychests.ui.ChallengeVictoryNotifier;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -74,8 +75,12 @@ public final class StructureCompleteCommand implements CommandExecutor, TabCompl
                         + " §7(" + update.foundCount() + "/" + update.totalCount() + ")"
         );
         if (update.completedNow()) {
-            sender.sendMessage("§6Die nächste Struktur kann jetzt ausgewählt werden.");
-            if (sender instanceof Player player) {
+            if (update.challengeCompletedNow()) {
+                ChallengeVictoryNotifier.announce();
+            } else {
+                sender.sendMessage("§6Die nächste Struktur kann jetzt ausgewählt werden.");
+            }
+            if (!update.challengeCompletedNow() && sender instanceof Player player) {
                 player.playSound(
                         player.getLocation(),
                         Sound.UI_TOAST_CHALLENGE_COMPLETE,
