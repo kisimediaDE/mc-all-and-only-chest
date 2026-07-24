@@ -60,6 +60,12 @@ Consequently, the number of chest-bearing structure categories added in 26.1,
 - Trial Chambers contain ordinary containers in addition to vault and trial
   spawner rewards. Their complete Vanilla loot-table family remains one
   challenge category, matching the original plugin.
+- Bastion item and enchantment semantics are identical in 26.1, 26.1.1,
+  26.1.2, and 26.2. The updated category contains 53 base goals and 13
+  separately enchanted variants. Compared with the original 1.21.4 plugin,
+  the normal and enchanted Diamond Spear are the two additional goals.
+  Diamond Pickaxes occur only enchanted and therefore have no separate base
+  goal.
 
 The executable mapping is maintained in
 `StructureCategory.java`. Its class initialization rejects duplicate mappings

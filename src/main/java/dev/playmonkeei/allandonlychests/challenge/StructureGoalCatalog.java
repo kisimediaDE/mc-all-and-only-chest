@@ -11,8 +11,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -20,6 +22,23 @@ import java.util.stream.Collectors;
  * Version-aware item goals generated from the official Vanilla 26.2 loot data.
  */
 public final class StructureGoalCatalog {
+
+    private static final Set<Material> BASTION_ENCHANTED_MATERIALS =
+            EnumSet.of(
+                    Material.CROSSBOW,
+                    Material.GOLDEN_HELMET,
+                    Material.GOLDEN_CHESTPLATE,
+                    Material.GOLDEN_LEGGINGS,
+                    Material.GOLDEN_BOOTS,
+                    Material.DIAMOND_PICKAXE,
+                    Material.DIAMOND_SHOVEL,
+                    Material.DIAMOND_SPEAR,
+                    Material.DIAMOND_SWORD,
+                    Material.DIAMOND_HELMET,
+                    Material.DIAMOND_CHESTPLATE,
+                    Material.DIAMOND_LEGGINGS,
+                    Material.DIAMOND_BOOTS
+            );
 
     private final Map<StructureCategory, List<StructureGoal>> goals;
 
@@ -57,6 +76,9 @@ public final class StructureGoalCatalog {
             if (category == StructureCategory.TRIAL_CHAMBERS) {
                 categoryGoals.addAll(trialChamberVariantGoals());
             }
+            if (category == StructureCategory.BASTION_REMNANT) {
+                categoryGoals.addAll(bastionEnchantedVariantGoals());
+            }
 
             if (categoryGoals.isEmpty()) {
                 throw new IllegalStateException("No item goals found for " + category.id());
@@ -79,6 +101,13 @@ public final class StructureGoalCatalog {
                             + trialGoalCount
             );
         }
+        int bastionGoalCount = goals.get(StructureCategory.BASTION_REMNANT).size();
+        if (bastionGoalCount != 66) {
+            throw new IllegalStateException(
+                    "Expected 66 Bastion goals for Minecraft 26.1/26.2, found "
+                            + bastionGoalCount
+            );
+        }
         return new StructureGoalCatalog(goals);
     }
 
@@ -99,7 +128,82 @@ public final class StructureGoalCatalog {
                 && !item.getEnchantments().isEmpty()) {
             matches.removeIf(goal -> goal.key().equals("diamond_axe"));
         }
+        if (category == StructureCategory.BASTION_REMNANT
+                && BASTION_ENCHANTED_MATERIALS.contains(item.getType())
+                && !item.getEnchantments().isEmpty()) {
+            matches.removeIf(goal -> goal.key().equals(item.getType().getKey().getKey()));
+        }
         return List.copyOf(matches);
+    }
+
+    private static List<StructureGoal> bastionEnchantedVariantGoals() {
+        return List.of(
+                StructureGoal.enchanted(
+                        Material.CROSSBOW,
+                        "enchanted:crossbow",
+                        "Verzauberte Armbrust"
+                ),
+                StructureGoal.enchanted(
+                        Material.GOLDEN_HELMET,
+                        "enchanted:golden_helmet",
+                        "Verzauberter Goldhelm"
+                ),
+                StructureGoal.enchanted(
+                        Material.GOLDEN_CHESTPLATE,
+                        "enchanted:golden_chestplate",
+                        "Verzauberter Goldharnisch"
+                ),
+                StructureGoal.enchanted(
+                        Material.GOLDEN_LEGGINGS,
+                        "enchanted:golden_leggings",
+                        "Verzauberter Goldbeinschutz"
+                ),
+                StructureGoal.enchanted(
+                        Material.GOLDEN_BOOTS,
+                        "enchanted:golden_boots",
+                        "Verzauberte Goldstiefel"
+                ),
+                StructureGoal.enchanted(
+                        Material.DIAMOND_PICKAXE,
+                        "enchanted:diamond_pickaxe",
+                        "Verzauberte Diamantspitzhacke"
+                ),
+                StructureGoal.enchanted(
+                        Material.DIAMOND_SHOVEL,
+                        "enchanted:diamond_shovel",
+                        "Verzauberte Diamantschaufel"
+                ),
+                StructureGoal.enchanted(
+                        Material.DIAMOND_SPEAR,
+                        "enchanted:diamond_spear",
+                        "Verzauberter Diamantspeer"
+                ),
+                StructureGoal.enchanted(
+                        Material.DIAMOND_SWORD,
+                        "enchanted:diamond_sword",
+                        "Verzaubertes Diamantschwert"
+                ),
+                StructureGoal.enchanted(
+                        Material.DIAMOND_HELMET,
+                        "enchanted:diamond_helmet",
+                        "Verzauberter Diamanthelm"
+                ),
+                StructureGoal.enchanted(
+                        Material.DIAMOND_CHESTPLATE,
+                        "enchanted:diamond_chestplate",
+                        "Verzauberter Diamantharnisch"
+                ),
+                StructureGoal.enchanted(
+                        Material.DIAMOND_LEGGINGS,
+                        "enchanted:diamond_leggings",
+                        "Verzauberter Diamantbeinschutz"
+                ),
+                StructureGoal.enchanted(
+                        Material.DIAMOND_BOOTS,
+                        "enchanted:diamond_boots",
+                        "Verzauberte Diamantstiefel"
+                )
+        );
     }
 
     private static List<StructureGoal> trialChamberVariantGoals() {
