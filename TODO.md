@@ -2,7 +2,29 @@
 
 Stand: 24. Juli 2026
 
-## Nächster Schritt
+## Aktueller Wiedereinstieg
+
+- Der Paper-Testserver wurde zum Tagesabschluss sauber gestoppt.
+- Gespeicherter Spielstand: `6/18`, Antike Stadt aktiv, `0/33` Items,
+  `0` Kisten/Quellen, kein Gesamtsieg gesetzt.
+- Abgeschlossen: Endsiedlung, Iglu, Dschungelpyramide, Festung,
+  Bastionsruine und Prüfungskammern.
+- Tagesabschluss-Sicherung:
+  `run/backups/end-of-day-2026-07-24/`
+  - `challenge.db`: geprüfte SQLite-Datenbank (`PRAGMA integrity_check = ok`)
+  - `AllAndOnlyChests-0.1.0-SNAPSHOT.jar`: aktuell getestetes Plugin
+- Zuletzt fertiggestellt und getestet:
+  - Gesamtsieg bei `18/18`, einmalige Meldung und Persistenz nach Neustart
+  - `/structurecomplete all`
+  - `/structurereset <Kategorie> confirm`
+  - Endertruhen als persönliche Lagerung ohne Strukturfortschritt
+  - natürliche und selbst platzierte Endertruhen jeweils mit und ohne
+    Silk Touch
+- Empfohlener nächster Arbeitspunkt: indirekte Itemquellen systematisch
+  prüfen und sperren, beginnend mit Angeln, Item Frames und Gemälden.
+- Serverstart: `./scripts/start-test-server.sh`
+
+## Offene Prüfungskammer-Nachtests
 
 - [ ] Prüfungskammer vollständig testen:
   - [x] normale Strukturkiste: Pfeil und Holzaxt erkannt, Quelle einmal gezählt
