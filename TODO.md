@@ -68,7 +68,10 @@ Stand: 24. Juli 2026
   - [x] Dschungelpyramide: Buch zu verzaubertem Buch korrigiert
   - [x] Festung: fehlendes verzaubertes Buch ergänzt
 - [ ] Indirekte Itemquellen prüfen und entsprechend der Challenge sperren.
-  - [ ] Angeln
+  - [x] Angeln
+    - [x] erfolgreicher Fang: kein Item, XP bleibt erhalten und Angel verliert
+          normal Haltbarkeit
+    - [x] gehaktes Lebewesen wird nur herangezogen und nicht gelöscht
   - [ ] Item Frames
   - [ ] Gemälde und andere Hanging Entities
   - [x] Blattverfall
