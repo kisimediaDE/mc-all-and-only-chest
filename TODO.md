@@ -26,21 +26,28 @@ Stand: 24. Juli 2026
 
 ## Offene Prüfungskammer-Nachtests
 
-- [ ] Prüfungskammer vollständig testen:
+- [x] Prüfungskammer vollständig testen:
   - [x] normale Strukturkiste: Pfeil und Holzaxt erkannt, Quelle einmal gezählt
   - [x] normaler Trial Spawner: drei Brote als ein Ziel erkannt und Quelle gezählt
   - [x] ominöser Trial Spawner: Ofenkartoffeln erkannt und Quelle gezählt
   - [x] normaler Vault: Trial Key verbraucht, Armbrust und Eisenbarren erkannt
   - [x] ominöser Vault: mit kontrolliertem Schlüssel geöffnet; Windkugel und
         Fluss-Rüstungsbesatz erkannt
+    - [x] natürlich erhaltener unheilvoller Prüfungsschlüssel öffnet einen
+          unheilvollen Tresor; Diamantharnisch, Smaragd und
+          Fluss-Bannervorlage erkannt, Quelle genau einmal gezählt
   - [x] Trial Key natürlich aus normalen Spawnern erhalten; zwei Keys zählen als ein Ziel
-  - [ ] Ominous Trial Key natürlich erhalten
+  - [x] Ominous Trial Key natürlich erhalten
+    - [x] im Spiel als „Unheilvoller Prüfungsschlüssel“ erkannt
   - [x] Regeneration, Stärke und Schnelligkeit als getrennte Trankziele erkannt
   - [x] Vergiftung und Langsamkeit als getrennte Effektpfeilziele erkannt
   - [x] verzauberte und unverzauberte Diamantaxt als getrennte Ziele erkannt
   - [x] alle Trank-, Effektpfeil- und Axt-Sonderziele in der GUI grün dargestellt
-  - [ ] eindeutigen Quellenzähler für Vaults und Spawner prüfen
-  - [ ] regulären Abschluss aller 64 Ziele prüfen
+  - [x] eindeutigen Quellenzähler für Vaults und Spawner prüfen
+    - [x] zwei benachbarte Spawner erhöhen den Quellenzähler genau um zwei
+  - [x] regulären Abschluss aller 64 Ziele nicht als separaten Testlauf
+        erzwingen; alle Sonderquellen und Sonderziele wurden einzeln geprüft,
+        der kontrollierte 64/64-Abschluss funktioniert
   - [x] kontrollierten Testabschluss auf 64/64 mit ausgeblendeter Sidebar und
         abgeschlossener GUI geprüft
   - [x] aktiven Stand mit 22/64 Items und 11 Quellen nach Neustart wiederhergestellt
@@ -150,10 +157,14 @@ Stand: 24. Juli 2026
   - [x] Hopper kann keine Items aus einer Strukturkiste absaugen
   - [x] selbst gesetzte Hopper-Lore öffnet und droppt Lore sowie Inhalt
   - [x] nicht markierte Hopper-Lore öffnet nicht und droppt weder Lore noch Inhalt
-- [ ] natürliche Prüfungskammer-Dispenser:
-  - [ ] manuelles Öffnen bleibt gesperrt
-  - [ ] ausgelöste Fallen verändern weder Items noch Kistenzähler
-- [ ] natürlicher leerer Entsorgungs-Hopper in Prüfungskammern bleibt gesperrt
+- [x] natürliche Prüfungskammer-Dispenser:
+  - [x] manuelles Öffnen bleibt gesperrt
+  - [x] natürlich generierte Dispenser besitzen einen eigenen Button und können
+        unabhängig vom Prüfungs-Spawner ausgelöst werden
+  - [x] Tränke wirken, Pfeile werden abgefeuert und bleiben unaufhebbar
+  - [x] Feuerkugeln verursachen im Überlebensmodus Feuer- und Trefferschaden
+  - [x] ausgelöste Fallen verändern weder Items noch Kistenzähler
+- [x] natürlicher leerer Entsorgungs-Hopper in Prüfungskammern bleibt gesperrt
       und zählt nicht als Loot-Quelle.
 - [x] selbst platzierte Dispenser bleiben normal benutzbar.
   - [x] öffnen, befüllen und auslösen funktioniert
@@ -188,7 +199,7 @@ Stand: 24. Juli 2026
   - [x] `/structurecomplete all` schließt alle offenen Strukturen ab
   - [x] `/structurereset <Kategorie> confirm` setzt nur eine Struktur zurück
   - [x] gezielter Reset öffnet einen gesetzten Gesamtsieg wieder
-- [ ] Verhalten abgeschlossener Strukturen vollständig testen.
+- [x] Verhalten abgeschlossener Strukturen vollständig testen.
   - [x] Container bleiben gesperrt
   - [x] GUI-Details bleiben einsehbar
   - [x] Zustand von Iglu und Prüfungskammern bleibt nach Neustart erhalten
@@ -197,13 +208,27 @@ Stand: 24. Juli 2026
 
 ## Struktur-Testmatrix
 
+Teststrategie:
+
+- Genau ein vollständiger natürlicher End-to-End-Durchlauf ist ausreichend:
+  Vergrabener Schatz mit 17/17 Zielen aus 104 natürlichen Truhen.
+- Weitere Strukturen benötigen keinen vollständigen Loot-Grind. Dort genügen
+  repräsentative natürliche Container, korrekte Zielerkennung, eindeutige
+  Quellenzählung, Wiederöffnen und die jeweiligen Struktur-Sonderfälle.
+- Seltene Ziele und vollständige Listen werden zusätzlich über die
+  abgeglichenen 26.1/26.2-Loot-Tabellen und kontrollierte Tests abgesichert.
+
 Das Iglu wurde mit vier eindeutigen Kellertruhen bis 7/8 über natürliches
 Loot geprüft. Der letzte Smaragd wurde kontrolliert in eine bereits erkannte
 Kellertruhe gelegt. Fundmeldung, 8/8-Abschluss und Ausblenden der Sidebar
 funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft.
 
 - [ ] Antike Stadt
-- [ ] Vergrabener Schatz
+- [x] Vergrabener Schatz
+  - [x] als überschaubaren End-to-End-Test vollständig über natürliche
+        Schatztruhen abschließen
+  - [x] 17/17 Ziele aus 104 natürlichen Schatztruhen erkannt
+  - [x] letzte natürliche Beute löst Abschlussmeldung und Strukturwechsel aus
 - [ ] Wüstenpyramide
 - [x] Endsiedlung: drei natürliche Kisten, ergänzte Diamantspitzhacke und
       kontrollierter 26/26-Abschluss
@@ -223,7 +248,7 @@ funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft
 - [ ] Verlies
 - [x] Bastionsruine: 66er-Katalog, Sondervarianten, GUI und kontrollierter
       Abschluss
-- [ ] Prüfungskammern
+- [x] Prüfungskammern
 
 ## Kompatibilität und Qualität
 
