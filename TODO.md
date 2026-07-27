@@ -155,7 +155,10 @@ Stand: 24. Juli 2026
   - [ ] ausgelöste Fallen verändern weder Items noch Kistenzähler
 - [ ] natürlicher leerer Entsorgungs-Hopper in Prüfungskammern bleibt gesperrt
       und zählt nicht als Loot-Quelle.
-- [ ] selbst platzierte Dispenser bleiben normal benutzbar.
+- [x] selbst platzierte Dispenser bleiben normal benutzbar.
+  - [x] öffnen, befüllen und auslösen funktioniert
+  - [x] abgeschossene Pfeile bleiben aufhebbar
+  - [x] Strukturfortschritt bleibt unverändert
 - [x] selbst platzierte Hopper und Hopper-Loren bleiben normal benutzbar.
 - [x] natürliche Dispenser-Fallen schießen weiterhin, frisch abgefeuerte
       Pfeile bleiben aber in Wand oder Boden stecken und sind nicht aufhebbar.

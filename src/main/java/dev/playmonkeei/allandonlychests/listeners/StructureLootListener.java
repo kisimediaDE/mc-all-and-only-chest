@@ -404,15 +404,21 @@ public final class StructureLootListener implements Listener {
     private Optional<String> sourceKey(InventoryHolder holder) {
         if (holder instanceof DoubleChest doubleChest) {
             List<String> halves = Stream.of(
-                            sourceKey(doubleChest.getLeftSide()),
-                            sourceKey(doubleChest.getRightSide())
+                            doubleChest.getLeftSide(),
+                            doubleChest.getRightSide()
                     )
+                    .filter(side -> !isEntirelyPlayerPlaced(side))
+                    .map(this::sourceKey)
                     .flatMap(Optional::stream)
                     .sorted()
                     .toList();
-            return halves.isEmpty()
-                    ? Optional.empty()
-                    : Optional.of("double:" + String.join("+", halves));
+            if (halves.isEmpty()) {
+                return Optional.empty();
+            }
+            if (halves.size() == 1) {
+                return Optional.of(halves.getFirst());
+            }
+            return Optional.of("double:" + String.join("+", halves));
         }
         if (holder instanceof BlockState blockState) {
             return Optional.of(sourceKey(blockState.getBlock()));
