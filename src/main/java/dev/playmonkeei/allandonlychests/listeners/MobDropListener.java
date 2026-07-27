@@ -8,12 +8,22 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityDropItemEvent;
 
 /**
  * Suppresses mob item drops except for progression-critical blaze rods and
  * ender pearls. Experience drops remain unchanged.
  */
 public final class MobDropListener implements Listener {
+
+    /**
+     * Prevents non-death item sources from living entities, such as naturally
+     * laid eggs or items released from an entity's inventory.
+     */
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onEntityDropItem(EntityDropItemEvent event) {
+        event.setCancelled(true);
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDeath(EntityDeathEvent event) {

@@ -89,7 +89,9 @@ Stand: 24. Juli 2026
     - [x] natürliche Blätter technisch auf Verfall ohne Drops umgestellt
     - [x] im Spiel geprüft: Blätter verschwinden, aber Setzlinge, Stöcke und
           Äpfel werden nicht fallengelassen
-  - [ ] von lebenden Entities fallengelassene Gegenstände
+  - [x] von lebenden Entities fallengelassene Gegenstände
+    - [x] natürlich gelegtes Hühnerei wird verhindert
+    - [x] vom Spieler fallengelassenes Ei bleibt normal aufhebbar
   - [ ] natürliche gemeißelte Bücherregale
   - [ ] natürliche Crafter
   - [ ] Scheren
