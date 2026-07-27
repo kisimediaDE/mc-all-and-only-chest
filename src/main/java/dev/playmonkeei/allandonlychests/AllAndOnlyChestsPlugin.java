@@ -141,6 +141,7 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(challengeSidebar, this);
         getCommand("chesthud").setExecutor(challengeSidebar);
+        getCommand("chesthud").setTabCompleter(challengeSidebar);
         challengeSidebar.refreshAll();
 
         getLogger().info(

@@ -27,8 +27,8 @@ commands:
     usage: /reset confirm
     permission: allandonlychests.command.reset
   chesthud:
-    description: Blendet die Challenge-Anzeige ein oder aus.
-    usage: /chesthud
+    description: Wählt Sidebar, BossBar oder eine ausgeblendete Challenge-Anzeige.
+    usage: /chesthud [sidebar|bossbar|off]
     permission: allandonlychests.command.chesthud
 
 permissions:
