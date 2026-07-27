@@ -18,8 +18,11 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.TNTPrimeEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.projectiles.BlockProjectileSource;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.event.block.Action;
 
 import java.util.Collection;
 import java.util.List;
@@ -162,6 +165,23 @@ public final class ChallengeBlockListener implements Listener {
                 }
             });
         });
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onChiseledBookshelfInteract(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK
+                || event.getClickedBlock() == null
+                || event.getClickedBlock().getType() != Material.CHISELED_BOOKSHELF
+                || repository.isTracked(BlockPosition.from(event.getClickedBlock()))) {
+            return;
+        }
+
+        event.setCancelled(true);
+        if (event.getHand() == EquipmentSlot.HAND) {
+            event.getPlayer().sendMessage(
+                    "§cNatürlich generierte gemeißelte Bücherregale dürfen nicht benutzt werden."
+            );
+        }
     }
 
     private static boolean isArrow(Material material) {

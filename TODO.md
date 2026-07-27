@@ -92,7 +92,11 @@ Stand: 24. Juli 2026
   - [x] von lebenden Entities fallengelassene Gegenstände
     - [x] natürlich gelegtes Hühnerei wird verhindert
     - [x] vom Spieler fallengelassenes Ei bleibt normal aufhebbar
-  - [ ] natürliche gemeißelte Bücherregale
+  - [x] natürliche gemeißelte Bücherregale
+    - [x] Einlegen und Entnehmen werden mit verständlicher Meldung gesperrt
+    - [x] Abbau ohne und mit Behutsamkeit erzeugt keinen Drop
+    - [x] selbst platziertes Regal kann Bücher einlagern und entnehmen
+    - [x] selbst platziertes Regal folgt beim Abbau dem Vanilla-Verhalten
   - [ ] natürliche Crafter
   - [ ] Scheren
   - [ ] Bürsten und Archäologie
