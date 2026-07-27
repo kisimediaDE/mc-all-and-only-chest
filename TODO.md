@@ -319,8 +319,8 @@ funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft
   - [x] Kataloggrößen für 26.1 und 26.2 beim Pluginstart abgesichert
   - [ ] Trial- und Bastion-Sonderfälle
 - [ ] Sidebar auf die aktuelle Component-API umstellen.
-- [ ] Itemvarianten in Chatmeldungen eindeutig benennen.
-  - [ ] unterschiedliche Schallplatten nicht beide nur als „Schallplatte“
+- [x] Itemvarianten in Chatmeldungen eindeutig benennen.
+  - [x] unterschiedliche Schallplatten nicht beide nur als „Schallplatte“
         anzeigen, sondern beispielsweise „C418 – 13“ und „C418 – cat“
 - [ ] README vervollständigen.
   - [ ] vollständige Command-Liste

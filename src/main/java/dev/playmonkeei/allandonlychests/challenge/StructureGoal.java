@@ -22,9 +22,24 @@ public record StructureGoal(
         return new StructureGoal(
                 material.getKey().getKey(),
                 material,
-                Component.translatable(material.translationKey()),
+                materialDisplayName(material),
                 item -> item.getType() == material
         );
+    }
+
+    private static Component materialDisplayName(Material material) {
+        String materialKey = material.getKey().getKey();
+        if (!materialKey.startsWith("music_disc_")) {
+            return Component.translatable(material.translationKey());
+        }
+
+        String track = materialKey.substring("music_disc_".length());
+        String displayTrack = switch (track) {
+            case "13" -> "C418 – 13";
+            case "cat" -> "C418 – cat";
+            default -> track.replace('_', ' ');
+        };
+        return Component.text("Schallplatte: " + displayTrack);
     }
 
     public static StructureGoal enchanted(
