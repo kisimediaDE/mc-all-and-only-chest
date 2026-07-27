@@ -164,7 +164,10 @@ Stand: 24. Juli 2026
       Pfeile bleiben aber in Wand oder Boden stecken und sind nicht aufhebbar.
 - [x] direktes Öffnen eines natürlichen Dschungelpyramiden-Dispensers bleibt
       gesperrt und verändert weder Item- noch Quellenfortschritt.
-- [ ] Doppelkiste aus einer natürlichen und einer platzierten Hälfte testen.
+- [x] Doppelkiste aus einer natürlichen und einer platzierten Hälfte testen.
+  - [x] Verbinden zählt die natürliche Hälfte nicht erneut
+  - [x] Trennen und erneutes Öffnen behält denselben Quellenzähler
+  - [x] die platzierte Hälfte wird nicht Bestandteil des natürlichen Quellenschlüssels
 - [x] eindeutigen Kistenzähler nach Serverneustart geprüft.
 
 ## Fehlende Challenge-Funktionen
