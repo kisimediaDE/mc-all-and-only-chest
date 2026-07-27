@@ -72,7 +72,14 @@ Stand: 24. Juli 2026
     - [x] erfolgreicher Fang: kein Item, XP bleibt erhalten und Angel verliert
           normal Haltbarkeit
     - [x] gehaktes Lebewesen wird nur herangezogen und nicht gelöscht
-  - [ ] Item Frames
+  - [x] Item Frames
+    - [x] natürlicher Elytra-Rahmen: Rechts- und Linksklick werden mit
+          verständlicher Meldung gesperrt
+    - [x] selbst platzierter normaler Item Frame funktioniert vollständig
+    - [x] selbst platzierter Glow Item Frame funktioniert vollständig
+    - [x] Player-Placed-Markierung bleibt nach Serverneustart erhalten
+    - [x] natürlicher Rahmen bleibt bei Supportverlust gesperrt; Rahmen und
+          Inhalt bleiben ohne Drop erhalten
   - [ ] Gemälde und andere Hanging Entities
   - [x] Blattverfall
     - [x] natürliche Blätter technisch auf Verfall ohne Drops umgestellt

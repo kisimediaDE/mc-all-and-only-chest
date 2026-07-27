@@ -8,6 +8,7 @@ import dev.playmonkeei.allandonlychests.commands.ResetCommand;
 import dev.playmonkeei.allandonlychests.listeners.ChallengeBlockListener;
 import dev.playmonkeei.allandonlychests.listeners.ExplosionDropListener;
 import dev.playmonkeei.allandonlychests.listeners.FishingDropListener;
+import dev.playmonkeei.allandonlychests.listeners.ItemFrameListener;
 import dev.playmonkeei.allandonlychests.listeners.MobDropListener;
 import dev.playmonkeei.allandonlychests.listeners.MovingBlockListener;
 import dev.playmonkeei.allandonlychests.listeners.StructureSelectionListener;
@@ -64,6 +65,12 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
                 this
         );
         getServer().getPluginManager().registerEvents(new FishingDropListener(), this);
+        getServer().getPluginManager().registerEvents(
+                new ItemFrameListener(
+                        new NamespacedKey(this, "player_placed_item_frame")
+                ),
+                this
+        );
         getServer().getPluginManager().registerEvents(new MobDropListener(), this);
         getServer().getPluginManager().registerEvents(
                 new MovingBlockListener(
