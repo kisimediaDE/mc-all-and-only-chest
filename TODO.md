@@ -80,7 +80,11 @@ Stand: 24. Juli 2026
     - [x] Player-Placed-Markierung bleibt nach Serverneustart erhalten
     - [x] natürlicher Rahmen bleibt bei Supportverlust gesperrt; Rahmen und
           Inhalt bleiben ohne Drop erhalten
-  - [ ] Gemälde und andere Hanging Entities
+  - [x] Gemälde und andere Hanging Entities
+    - [x] per Command erzeugtes, nicht markiertes Gemälde bleibt geschützt
+    - [x] selbst platziertes Gemälde droppt normal
+    - [x] Player-Placed-Markierung eines Gemäldes überlebt einen Neustart
+    - [x] selbst erzeugter Leinenknoten funktioniert normal
   - [x] Blattverfall
     - [x] natürliche Blätter technisch auf Verfall ohne Drops umgestellt
     - [x] im Spiel geprüft: Blätter verschwinden, aber Setzlinge, Stöcke und
