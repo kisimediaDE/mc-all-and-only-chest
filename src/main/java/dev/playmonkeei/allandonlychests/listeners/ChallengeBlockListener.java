@@ -15,6 +15,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockMultiPlaceEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.CrafterCraftEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.TNTPrimeEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -181,6 +182,13 @@ public final class ChallengeBlockListener implements Listener {
             event.getPlayer().sendMessage(
                     "§cNatürlich generierte gemeißelte Bücherregale dürfen nicht benutzt werden."
             );
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onCrafterCraft(CrafterCraftEvent event) {
+        if (!repository.isTracked(BlockPosition.from(event.getBlock()))) {
+            event.setCancelled(true);
         }
     }
 

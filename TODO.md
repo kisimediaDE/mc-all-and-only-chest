@@ -97,8 +97,13 @@ Stand: 24. Juli 2026
     - [x] Abbau ohne und mit Behutsamkeit erzeugt keinen Drop
     - [x] selbst platziertes Regal kann Bücher einlagern und entnehmen
     - [x] selbst platziertes Regal folgt beim Abbau dem Vanilla-Verhalten
-  - [ ] natürliche Crafter
-  - [ ] Scheren
+  - [x] natürliche Crafter
+    - [x] nicht markierter Crafter kann nicht geöffnet werden
+    - [x] Redstone-Crafting bleibt ohne Output und verbraucht keine Zutaten
+    - [x] selbst platzierter Crafter verarbeitet Zutaten normal
+  - [x] Scheren
+    - [x] Schaf wird geschoren, Schere verliert Haltbarkeit, keine Wolle
+    - [x] Mooshroom wird zur Kuh, Schere verliert Haltbarkeit, keine Pilze
   - [ ] Bürsten und Archäologie
   - [x] natürliche verzierte Krüge in Prüfungskammern: kein Krug-, Scherben-
         oder Inhaltsdrop und kein Strukturfortschritt
