@@ -67,7 +67,7 @@ Stand: 24. Juli 2026
   - [x] Endsiedlung: fehlende Diamantspitzhacke ergänzt
   - [x] Dschungelpyramide: Buch zu verzaubertem Buch korrigiert
   - [x] Festung: fehlendes verzaubertes Buch ergänzt
-- [ ] Indirekte Itemquellen prüfen und entsprechend der Challenge sperren.
+- [x] Indirekte Itemquellen prüfen und entsprechend der Challenge sperren.
   - [x] Angeln
     - [x] erfolgreicher Fang: kein Item, XP bleibt erhalten und Angel verliert
           normal Haltbarkeit
@@ -104,7 +104,10 @@ Stand: 24. Juli 2026
   - [x] Scheren
     - [x] Schaf wird geschoren, Schere verliert Haltbarkeit, keine Wolle
     - [x] Mooshroom wird zur Kuh, Schere verliert Haltbarkeit, keine Pilze
-  - [ ] Bürsten und Archäologie
+  - [x] Bürsten und Archäologie
+    - [x] natürlicher verdächtiger Block wird vollständig gebürstet
+    - [x] Bürstenhaltbarkeit sinkt und der Block wird zu normalem Sand
+    - [x] sichtbarer Archäologie-Inhalt erzeugt keinen aufhebbaren Drop
   - [x] natürliche verzierte Krüge in Prüfungskammern: kein Krug-, Scherben-
         oder Inhaltsdrop und kein Strukturfortschritt
 

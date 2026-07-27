@@ -5,6 +5,7 @@ import dev.playmonkeei.allandonlychests.storage.BlockPosition;
 import dev.playmonkeei.allandonlychests.storage.PlacedBlockRepository;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.BrushableBlock;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -13,6 +14,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockMultiPlaceEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.CrafterCraftEvent;
@@ -188,6 +190,14 @@ public final class ChallengeBlockListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onCrafterCraft(CrafterCraftEvent event) {
         if (!repository.isTracked(BlockPosition.from(event.getBlock()))) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onBrushableBlockDrop(BlockDropItemEvent event) {
+        if (event.getBlockState() instanceof BrushableBlock
+                && !repository.isTracked(BlockPosition.from(event.getBlock()))) {
             event.setCancelled(true);
         }
     }
