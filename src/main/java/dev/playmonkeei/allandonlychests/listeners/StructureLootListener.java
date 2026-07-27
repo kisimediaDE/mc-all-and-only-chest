@@ -28,6 +28,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockDispenseLootEvent;
+import org.bukkit.event.entity.EntityPlaceEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -64,6 +65,7 @@ public final class StructureLootListener implements Listener {
     private final StructureGoalCatalog goalCatalog;
     private final ChallengeSidebar sidebar;
     private final NamespacedKey structureCategoryKey;
+    private final NamespacedKey playerPlacedContainerEntityKey;
     private final Logger logger;
 
     public StructureLootListener(
@@ -81,6 +83,23 @@ public final class StructureLootListener implements Listener {
         this.sidebar = sidebar;
         this.logger = logger;
         structureCategoryKey = new NamespacedKey(plugin, "structure_category");
+        playerPlacedContainerEntityKey =
+                new NamespacedKey(plugin, "player_placed_container_entity");
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onContainerEntityPlace(EntityPlaceEvent event) {
+        if (event.getPlayer() == null
+                || !(event.getEntity() instanceof InventoryHolder)
+                || !(event.getEntity() instanceof PersistentDataHolder dataHolder)) {
+            return;
+        }
+
+        dataHolder.getPersistentDataContainer().set(
+                playerPlacedContainerEntityKey,
+                PersistentDataType.BYTE,
+                (byte) 1
+        );
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -354,6 +373,13 @@ public final class StructureLootListener implements Listener {
     }
 
     private boolean isEntirelyPlayerPlaced(InventoryHolder holder) {
+        if (holder instanceof Entity entity
+                && entity.getPersistentDataContainer().has(
+                        playerPlacedContainerEntityKey,
+                        PersistentDataType.BYTE
+                )) {
+            return true;
+        }
         if (holder instanceof DoubleChest doubleChest) {
             return isEntirelyPlayerPlaced(doubleChest.getLeftSide())
                     && isEntirelyPlayerPlaced(doubleChest.getRightSide());

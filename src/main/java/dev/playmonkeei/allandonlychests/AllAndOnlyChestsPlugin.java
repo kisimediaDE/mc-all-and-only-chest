@@ -72,7 +72,12 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
                 ),
                 this
         );
-        getServer().getPluginManager().registerEvents(new MobDropListener(), this);
+        getServer().getPluginManager().registerEvents(
+                new MobDropListener(
+                        new NamespacedKey(this, "player_placed_container_entity")
+                ),
+                this
+        );
         getServer().getPluginManager().registerEvents(
                 new MovingBlockListener(
                         placedBlockRepository,

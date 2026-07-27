@@ -118,7 +118,13 @@ Stand: 24. Juli 2026
   - [x] beide Hälften zählen zusammen als genau eine Quelle
   - [x] Wiederöffnen erhöht den Quellenzähler nicht
   - [x] später ergänztes Ziel wird erkannt, ohne die Quelle erneut zu zählen
-- [ ] Kistenloren testen.
+- [x] Kistenloren testen.
+  - [x] Loot-Lore wird erkannt und als eindeutige Quelle gezählt
+  - [x] Wiederöffnen erhöht den Quellenzähler nicht
+  - [x] selbst gesetzte Kistenlore kann frei geöffnet werden
+  - [x] Player-Placed-Markierung überlebt einen Serverneustart
+  - [x] selbst gesetzte Lore droppt beim Abbau Lore und Inhalt
+  - [x] nicht markierte Lore droppt weder Lore noch Inhalt
 - [x] natürliches Prüfungskammer-Fass erkannt und genau einmal gezählt.
 - [ ] bereits generierte, geöffnete oder geleerte Strukturkisten testen.
 - [x] erkanntes Prüfungskammer-Fass nach Serverneustart erneut geöffnet.
@@ -130,7 +136,9 @@ Stand: 24. Juli 2026
   - [x] natürlich generiert mit Silk Touch: kein Drop
   - [x] selbst platziert ohne Silk Touch: acht Obsidian
   - [x] selbst platziert mit Silk Touch: Endertruhe
-- [ ] Abbau einer gefüllten Strukturkiste auf mögliche Drops prüfen.
+- [x] Abbau einer gefüllten Strukturkiste auf mögliche Drops prüfen.
+  - [x] nicht markierte gefüllte Kiste droppt weder Kiste noch Inhalt
+  - [x] selbst platzierte gefüllte Kiste droppt Kiste und Inhalt normal
 - [ ] Hopper und Hopper-Loren mit allen Containerarten testen.
 - [ ] natürliche Prüfungskammer-Dispenser:
   - [ ] manuelles Öffnen bleibt gesperrt
