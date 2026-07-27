@@ -223,29 +223,80 @@ Loot geprüft. Der letzte Smaragd wurde kontrolliert in eine bereits erkannte
 Kellertruhe gelegt. Fundmeldung, 8/8-Abschluss und Ausblenden der Sidebar
 funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft.
 
-- [ ] Antike Stadt
+- [x] Antike Stadt
+  - [x] mehrere natürliche Truhen und Doppelkisten mit echtem Loot erkannt
+  - [x] Wiederöffnen und Neustart bleiben ohne erneute Quellenzählung
+  - [x] natürliche und selbst platzierte Endertruhen-Regeln geprüft
+  - [x] natürliche Hopper bleiben gesperrt und können Strukturloot nicht
+        unzulässig transportieren
+  - [x] gefüllte natürliche Container und gemischte Doppelkisten geprüft
 - [x] Vergrabener Schatz
   - [x] als überschaubaren End-to-End-Test vollständig über natürliche
         Schatztruhen abschließen
   - [x] 17/17 Ziele aus 104 natürlichen Schatztruhen erkannt
   - [x] letzte natürliche Beute löst Abschlussmeldung und Strukturwechsel aus
-- [ ] Wüstenpyramide
+- [x] Wüstenpyramide
+  - [x] vier natürliche Truhen als vier eindeutige Quellen gezählt
+  - [x] Wiederöffnen zählt eine Truhe nicht erneut
+  - [x] repräsentatives Loot korrekt erkannt
+  - [x] natürliche Druckplatten-/TNT-Falle funktioniert und erzeugt keine
+        Block-, Truhen- oder Inhaltsdrops
+    - [x] kontrolliert mit zuvor leerem Spielerinventar und gefüllter,
+          natürlich generierter Truhe wiederholt
 - [x] Endsiedlung: drei natürliche Kisten, ergänzte Diamantspitzhacke und
       kontrollierter 26/26-Abschluss
-- [ ] Netherfestung
+- [x] Netherfestung
+  - [x] natürliche Truhe im Nether erkannt
+  - [x] Netherfestungs-Loot korrekt zugeordnet
+  - [x] Truhe genau einmal gezählt und Wiederöffnen stabil
 - [x] Iglu: Loot-Fortschritt und kontrollierter 8/8-Abschluss
 - [x] Dschungelpyramide: natürlicher Loot aus beiden Kisten, verzaubertes
       Buch, Dispenser-Regeln und kontrollierter 14/14-Abschluss
-- [ ] Ozeanruine
-- [ ] Plünderer-Außenposten
-- [ ] Ruinenportal
-- [ ] Schiffswrack
+- [x] Ozeanruine
+  - [x] natürliche Truhe einer warmen Ruine erkannt
+  - [x] Ruinen-Loot korrekt zugeordnet und Truhe genau einmal gezählt
+  - [x] Wiederöffnen bleibt ohne erneute Quellenzählung
+  - [x] natürlicher „Seltsamer Sand“ lässt das Artefakt beim Bürsten sichtbar
+        austreten, erzeugt aber keinen Drop und keinen Fortschritt
+- [x] Plünderer-Außenposten
+  - [x] natürliche Turmtruhe erkannt
+  - [x] Außenposten-Loot korrekt zugeordnet
+  - [x] zweifaches Öffnen zählt die Truhe nur einmal
+- [x] Ruinenportal
+  - [x] natürliche Truhe einer Ozean-/Unterwasservariante erkannt
+  - [x] Ruinenportal-Loot korrekt zugeordnet
+  - [x] Truhe genau einmal gezählt und Wiederöffnen stabil
+- [x] Schiffswrack
+  - [x] Versorgungstruhe erkannt
+  - [x] Schatztruhe erkannt
+  - [x] Kartentruhe erkannt
+  - [x] drei natürliche Truhen über zwei Wracks als drei eindeutige Quellen
+        gezählt
+  - [x] Wiederöffnen zählt eine Truhe nicht erneut
 - [x] Festung: beide Bibliothekskisten, gewöhnliche Kiste, normales und
       verzaubertes Buch getrennt sowie kontrollierter 27/27-Abschluss
-- [ ] Minenstollen
-- [ ] Dorf mit unterschiedlichen Berufen und Biomen
-- [ ] Waldanwesen
-- [ ] Verlies
+- [x] Minenstollen
+  - [x] natürlich generierte Güterlore mit `abandoned_mineshaft`-Loot erkannt
+  - [x] Wiederöffnen zählt die Güterlore nicht erneut
+  - [x] Abbau im Überlebensmodus droppt weder Lore noch Truhe oder Inhalt
+- [x] Dorf mit unterschiedlichen Berufen und Biomen
+  - [x] Ebenendorf mit Waffenschmied-Truhe geprüft
+  - [x] Taigadorf mit biomeigener Wohnhaus-Truhe geprüft
+  - [x] Taigadorf mit Gerberei-Truhe geprüft
+  - [x] Taigadorf mit weiterer Waffenschmied-Truhe geprüft
+  - [x] vier natürliche Truhen als vier eindeutige Quellen gezählt
+  - [x] unterschiedliche Dorf-Loot-Tabellen gemeinsam derselben Kategorie
+        zugeordnet
+- [x] Waldanwesen
+  - [x] natürliche Arena-/Galerietruhe erkannt
+  - [x] Waldanwesen-Loot korrekt zugeordnet
+  - [x] `music_disc_13` und `music_disc_cat` als getrennte Ziele erkannt
+  - [x] Truhe genau einmal gezählt und Wiederöffnen stabil
+- [x] Verlies
+  - [x] über das originale Vanilla-Feature `minecraft:monster_room` erzeugt
+  - [x] `simple_dungeon`-Loot erkannt und Truhe genau einmal gezählt
+  - [x] normaler Monster-Spawner zählt nicht als Loot-Quelle
+  - [x] natürliche gefüllte Truhe droppt beim Abbau weder Truhe noch Inhalt
 - [x] Bastionsruine: 66er-Katalog, Sondervarianten, GUI und kontrollierter
       Abschluss
 - [x] Prüfungskammern
@@ -268,6 +319,9 @@ funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft
   - [x] Kataloggrößen für 26.1 und 26.2 beim Pluginstart abgesichert
   - [ ] Trial- und Bastion-Sonderfälle
 - [ ] Sidebar auf die aktuelle Component-API umstellen.
+- [ ] Itemvarianten in Chatmeldungen eindeutig benennen.
+  - [ ] unterschiedliche Schallplatten nicht beide nur als „Schallplatte“
+        anzeigen, sondern beispielsweise „C418 – 13“ und „C418 – cat“
 - [ ] README vervollständigen.
   - [ ] vollständige Command-Liste
   - [ ] Installation für macOS und Windows
