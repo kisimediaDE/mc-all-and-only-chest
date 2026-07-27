@@ -3,8 +3,11 @@ package dev.playmonkeei.allandonlychests.ui;
 import dev.playmonkeei.allandonlychests.challenge.StructureCategory;
 import dev.playmonkeei.allandonlychests.challenge.StructureGoalCatalog;
 import dev.playmonkeei.allandonlychests.storage.ChallengeStateRepository;
+import io.papermc.paper.scoreboard.numbers.NumberFormat;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,6 +18,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,25 +67,59 @@ public final class ChallengeSidebar implements Listener, CommandExecutor {
         Objective objective = scoreboard.registerNewObjective(
                 "aoc_status",
                 Criteria.DUMMY,
-                ChatColor.GOLD + "" + ChatColor.BOLD + "All & Only Chests"
+                Component.text("All & Only Chests", NamedTextColor.GOLD)
+                        .decorate(TextDecoration.BOLD)
         );
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        objective.numberFormat(NumberFormat.blank());
 
         int found = stateRepository.foundCount(category);
         int total = goalCatalog.goalsFor(category).size();
 
-        objective.getScore(ChatColor.YELLOW + "Struktur:").setScore(4);
-        objective.getScore(ChatColor.WHITE + category.displayName()).setScore(3);
-        objective.getScore(
-                ChatColor.AQUA + "Items: " + ChatColor.WHITE + found
-                        + ChatColor.GRAY + "/" + ChatColor.WHITE + total
-        ).setScore(2);
-        objective.getScore(
-                ChatColor.GOLD + "Kisten: " + ChatColor.WHITE
-                        + stateRepository.openedSourceCount()
-        ).setScore(1);
+        setLine(
+                objective,
+                "aoc_structure_label",
+                4,
+                Component.text("Struktur:", NamedTextColor.YELLOW)
+        );
+        setLine(
+                objective,
+                "aoc_structure",
+                3,
+                Component.text(category.displayName(), NamedTextColor.WHITE)
+        );
+        setLine(
+                objective,
+                "aoc_items",
+                2,
+                Component.text("Items: ", NamedTextColor.AQUA)
+                        .append(Component.text(found, NamedTextColor.WHITE))
+                        .append(Component.text("/", NamedTextColor.GRAY))
+                        .append(Component.text(total, NamedTextColor.WHITE))
+        );
+        setLine(
+                objective,
+                "aoc_sources",
+                1,
+                Component.text("Kisten: ", NamedTextColor.GOLD)
+                        .append(Component.text(
+                                stateRepository.openedSourceCount(),
+                                NamedTextColor.WHITE
+                        ))
+        );
 
         player.setScoreboard(scoreboard);
+    }
+
+    private void setLine(
+            Objective objective,
+            String entry,
+            int value,
+            Component displayName
+    ) {
+        Score score = objective.getScore(entry);
+        score.setScore(value);
+        score.customName(displayName);
     }
 
     @EventHandler
