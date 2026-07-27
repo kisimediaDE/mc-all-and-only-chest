@@ -126,10 +126,15 @@ Stand: 24. Juli 2026
   - [x] selbst gesetzte Lore droppt beim Abbau Lore und Inhalt
   - [x] nicht markierte Lore droppt weder Lore noch Inhalt
 - [x] natürliches Prüfungskammer-Fass erkannt und genau einmal gezählt.
-- [ ] bereits generierte, geöffnete oder geleerte Strukturkisten testen.
+- [x] bereits generierte, geöffnete oder geleerte Strukturkisten testen.
+  - [x] generierter Loot wird beim ersten Öffnen erkannt
+  - [x] Wiederöffnen erzeugt weder Funde noch einen neuen Quellenbesuch
+  - [x] vollständig geleerte Strukturkiste bleibt zugänglich und erkannt
 - [x] erkanntes Prüfungskammer-Fass nach Serverneustart erneut geöffnet.
-- [ ] Container nach Entladen und erneutem Laden des Chunks testen.
-- [ ] natürliche leere Container testen.
+- [x] Container nach Entladen und erneutem Laden des Chunks testen.
+  - [x] Kategorie- und Quellenmarkierung bleibt über mehrere Neustarts erhalten
+- [x] natürliche leere Container testen.
+  - [x] geleerte Doppelkiste öffnet ohne Fund und ohne erneute Quellenzählung
 - [x] Endertruhe bleibt mit Struktur-Items und nach Strukturwechsel frei zugänglich.
 - [x] Endertruhen-Abbau:
   - [x] natürlich generiert ohne Silk Touch: kein Drop
