@@ -113,7 +113,11 @@ Stand: 24. Juli 2026
 
 ## Container- und Persistenz-Edge-Cases
 
-- [ ] Doppelkisten als genau eine besuchte Kiste testen.
+- [x] Doppelkisten als genau eine besuchte Kiste testen.
+  - [x] Loot aus beiden Hälften wird gemeinsam erkannt
+  - [x] beide Hälften zählen zusammen als genau eine Quelle
+  - [x] Wiederöffnen erhöht den Quellenzähler nicht
+  - [x] später ergänztes Ziel wird erkannt, ohne die Quelle erneut zu zählen
 - [ ] Kistenloren testen.
 - [x] natürliches Prüfungskammer-Fass erkannt und genau einmal gezählt.
 - [ ] bereits generierte, geöffnete oder geleerte Strukturkisten testen.
