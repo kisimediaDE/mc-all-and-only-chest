@@ -20,9 +20,11 @@ import org.bukkit.block.BrewingStand;
 import org.bukkit.block.DecoratedPot;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.block.Hopper;
 import org.bukkit.block.TileState;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.minecart.HopperMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -133,6 +135,13 @@ public final class StructureLootListener implements Listener {
             if (isEntirelyPlayerPlaced(holder)) {
                 return;
             }
+            if (holder instanceof Hopper || holder instanceof HopperMinecart) {
+                event.setCancelled(true);
+                player.sendMessage(
+                        "§cNatürlich generierte Hopper dürfen nicht benutzt werden."
+                );
+                return;
+            }
             if (holder instanceof Dispenser || holder instanceof BrewingStand) {
                 event.setCancelled(true);
                 player.sendMessage("§cNur erlaubte Strukturkisten dürfen geöffnet werden.");
@@ -227,7 +236,9 @@ public final class StructureLootListener implements Listener {
         InventoryHolder holder = source.getHolder();
         if (holder != null
                 && !isEntirelyPlayerPlaced(holder)
-                && (categoryFor(holder).isPresent()
+                && (holder instanceof Hopper
+                || holder instanceof HopperMinecart
+                || categoryFor(holder).isPresent()
                 || categoryFromItems(source.getStorageContents()).isPresent())) {
             event.setCancelled(true);
         }

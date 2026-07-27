@@ -144,13 +144,19 @@ Stand: 24. Juli 2026
 - [x] Abbau einer gefüllten Strukturkiste auf mögliche Drops prüfen.
   - [x] nicht markierte gefüllte Kiste droppt weder Kiste noch Inhalt
   - [x] selbst platzierte gefüllte Kiste droppt Kiste und Inhalt normal
-- [ ] Hopper und Hopper-Loren mit allen Containerarten testen.
+- [x] Hopper und Hopper-Loren mit allen Containerarten testen.
+  - [x] nicht markierter Hopper bleibt geschlossen und transportiert nicht
+  - [x] selbst platzierter Hopper öffnet und transportiert normal
+  - [x] Hopper kann keine Items aus einer Strukturkiste absaugen
+  - [x] selbst gesetzte Hopper-Lore öffnet und droppt Lore sowie Inhalt
+  - [x] nicht markierte Hopper-Lore öffnet nicht und droppt weder Lore noch Inhalt
 - [ ] natürliche Prüfungskammer-Dispenser:
   - [ ] manuelles Öffnen bleibt gesperrt
   - [ ] ausgelöste Fallen verändern weder Items noch Kistenzähler
 - [ ] natürlicher leerer Entsorgungs-Hopper in Prüfungskammern bleibt gesperrt
       und zählt nicht als Loot-Quelle.
-- [ ] selbst platzierte Dispenser und Hopper bleiben normal benutzbar.
+- [ ] selbst platzierte Dispenser bleiben normal benutzbar.
+- [x] selbst platzierte Hopper und Hopper-Loren bleiben normal benutzbar.
 - [x] natürliche Dispenser-Fallen schießen weiterhin, frisch abgefeuerte
       Pfeile bleiben aber in Wand oder Boden stecken und sind nicht aufhebbar.
 - [x] direktes Öffnen eines natürlichen Dschungelpyramiden-Dispensers bleibt
