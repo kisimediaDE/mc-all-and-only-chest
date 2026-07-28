@@ -4,5 +4,6 @@ backup/*
 .gradle/
 build/
 run/
+run-26.1/
 *.iml
 .idea/

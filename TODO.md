@@ -1,6 +1,6 @@
 # All and Only Chests – Arbeitsliste
 
-Stand: 27. Juli 2026
+Stand: 28. Juli 2026
 
 ## Aktueller Wiedereinstieg
 
@@ -23,10 +23,13 @@ Stand: 27. Juli 2026
   - `/chesthud sidebar`, `/chesthud bossbar` und `/chesthud off`
   - BossBar-Fortschritt aktualisiert sich beim Öffnen einer Quelle und
     verschwindet beim Struktur- beziehungsweise Gesamtabschluss
-- Empfohlener nächster Arbeitspunkt: separaten Paper-26.1/26.1.2-Testserver
-  einrichten und Start-, Katalog- und repräsentative Gameplay-Tests
-  durchführen, ohne den funktionierenden 26.2-Testserver zu verändern.
-- Serverstart: `./scripts/start-test-server.sh`
+- Paper 26.1.2 Build 74 wurde in `run-26.1/` separat eingerichtet und mit
+  derselben Plugin-JAR erfolgreich getestet.
+- Empfohlener nächster Arbeitspunkt: Windows-Kompatibilität vorbereiten oder
+  automatisierte Tests für die bereits manuell bestätigten Kernregeln
+  ergänzen.
+- Serverstart 26.2: `./scripts/start-test-server.sh`
+- Serverstart 26.1.2: `./scripts/start-test-server-26.1.sh`
 
 ## Offene Prüfungskammer-Nachtests
 
@@ -307,7 +310,20 @@ funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft
 
 ## Kompatibilität und Qualität
 
-- [ ] echten Start- und Gameplay-Test mit Paper 26.1/26.1.2 durchführen.
+- [x] echten Start- und Gameplay-Test mit Paper 26.1/26.1.2 durchführen.
+  - [x] Paper 26.1.2 Build 74 mit Java 25 auf Port `25566` gestartet
+  - [x] dieselbe für 26.2 getestete Plugin-JAR ohne API-Fehler geladen
+  - [x] frische, getrennte SQLite-Datenbank angelegt
+  - [x] 26.2-only-Ziel `music_disc_bounce` sauber übersprungen;
+        Minenstollen zeigt auf 26.1.2 korrekt `0/21` statt `0/22`
+  - [x] GUI, Strukturauswahl, Sidebar und BossBar geprüft
+  - [x] natürliche Schatztruhe erkannt: neun Ziele und eine Quelle
+  - [x] Wiederöffnen derselben Quelle verändert den Fortschritt nicht
+  - [x] natürliche gefüllte Truhe droppt beim Abbau weder Truhe noch Inhalt
+  - [x] selbst platzierte Truhe öffnet und droppt normal, ohne Fortschritt
+  - [x] aktive Struktur, `9/17` Ziele und eine Quelle überleben den Neustart
+  - [x] kontrollierter Strukturabschluss entfernt das HUD und gibt die nächste
+        Auswahl frei
 - [ ] Windows-Test durchführen.
   - [ ] Java 25
   - [ ] Gradle-Wrapper und Build
