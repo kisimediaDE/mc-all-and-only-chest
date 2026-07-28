@@ -347,10 +347,10 @@ funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft
   - [ ] SQLite-Treiber
   - [ ] Paper-Start und Plugin-Laden
 - [ ] automatisierte Tests ergänzen.
-  - [ ] SQLite-Persistenz
-  - [ ] Auswahl- und Abschlusslogik
-  - [ ] Reset
-  - [ ] eindeutige Quellenzählung
+  - [x] SQLite-Persistenz
+  - [x] Auswahl- und Abschlusslogik
+  - [x] Reset
+  - [x] eindeutige Quellenzählung
   - [ ] Item-Matcher
   - [x] Kataloggrößen für 26.1 und 26.2 beim Pluginstart abgesichert
   - [ ] Trial- und Bastion-Sonderfälle
@@ -358,13 +358,14 @@ funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft
 - [x] Itemvarianten in Chatmeldungen eindeutig benennen.
   - [x] unterschiedliche Schallplatten nicht beide nur als „Schallplatte“
         anzeigen, sondern beispielsweise „C418 – 13“ und „C418 – cat“
-- [ ] README vervollständigen.
-  - [ ] vollständige Command-Liste
-  - [ ] Installation für macOS und Windows
-  - [ ] Ablauf nach einem Hardcore-Tod
-  - [ ] Datenbank-, Backup- und Reset-Hinweise
-  - [ ] `structure-goals.yml` erklären
-  - [ ] Kompatibilitätsstatus dokumentieren
+- [x] README vervollständigen.
+  - [x] vollständige Command-Liste
+  - [x] Installation für macOS und Windows
+  - [x] Ablauf nach einem Hardcore-Tod
+  - [x] Datenbank-, Backup- und Reset-Hinweise
+  - [x] `structure-goals.yml` erklären
+  - [x] Kompatibilitätsstatus dokumentieren
+  - [x] finale Screenshots aufnehmen und vorbereitete Bildverweise aktivieren
 - [ ] Release vorbereiten.
   - [ ] Änderungen bewusst committen
   - [ ] Snapshot-Version ersetzen
