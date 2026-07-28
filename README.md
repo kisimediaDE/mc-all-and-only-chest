@@ -76,7 +76,8 @@ wurde für aktuelle Minecraft-Versionen jedoch eigenständig neu umgesetzt.
 - Minecraft Java **26.1.2** oder **26.2**
 - ein [Paper-Server](https://papermc.io/downloads/paper/)
 - **Java 25**
-- das Plugin-JAR aus dem jeweiligen Release
+- das Plugin-JAR aus den
+  [GitHub Releases](https://github.com/kisimediaDE/mc-all-and-only-chest/releases)
 
 Vanilla, Fabric, Forge, NeoForge und Spigot werden nicht als Serverplattform
 unterstützt. Client-Mods sind grundsätzlich möglich, solange sie keine
@@ -102,10 +103,13 @@ jedoch nicht automatisch zum Ende des Durchlaufs.
 ### 2. Plugin installieren
 
 1. Stoppe den Server vollständig.
-2. Kopiere `AllAndOnlyChests-<Version>.jar` in den Ordner `plugins`.
-3. Starte den Server wieder.
-4. Prüfe in der Konsole, ob `AllAndOnlyChests enabled` erscheint.
-5. Verbinde dich und öffne mit `/gui` die Strukturauswahl.
+2. Lade unter
+   [Releases](https://github.com/kisimediaDE/mc-all-and-only-chest/releases)
+   das JAR `AllAndOnlyChests-<Version>.jar` herunter.
+3. Kopiere das JAR in den Ordner `plugins`.
+4. Starte den Server wieder.
+5. Prüfe in der Konsole, ob `AllAndOnlyChests enabled` erscheint.
+6. Verbinde dich und öffne mit `/gui` die Strukturauswahl.
 
 Der erste Start erstellt automatisch:
 

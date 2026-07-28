@@ -368,10 +368,11 @@ funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft
   - [x] finale Screenshots aufnehmen und vorbereitete Bildverweise aktivieren
 - [ ] Release vorbereiten.
   - [ ] Änderungen bewusst committen
-  - [ ] Snapshot-Version ersetzen
+  - [x] Snapshot-Version durch `0.1.0-beta.1` ersetzen
+  - [x] automatische Build-, Test- und Release-Aktionen einrichten
   - [ ] frische Installation ohne Datenbank testen
   - [ ] Upgrade mit bestehender Datenbank testen
-  - [ ] finales Release-JAR und Prüfsumme erzeugen
+  - [x] Release-JAR und SHA-256-Prüfsumme automatisch erzeugen
 
 ## Optionale spätere Verbesserungen
 
