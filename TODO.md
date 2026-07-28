@@ -395,6 +395,8 @@ funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft
 - Vaults und Trial Spawner zählen als legale Prüfungskammer-Quellen.
 - Besuche werden pro eindeutiger Loot-Quelle gezählt; erneutes Öffnen derselben
   Kiste erhöht den Zähler nicht.
+- Die eigenständige Neuimplementierung wird unter der möglichst freien
+  Zero-Clause BSD License (`0BSD`) veröffentlicht.
 - Die Sidebar verwendet die aktuelle Component-API. Über `/chesthud` kann
   zwischen Sidebar, BossBar und ausgeblendeter Anzeige gewechselt werden.
   Ein Resource Pack bleibt eine optionale spätere Erweiterung.
