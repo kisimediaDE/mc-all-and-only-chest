@@ -29,6 +29,14 @@ java {
 }
 
 tasks {
+    processResources {
+        val pluginVersion = project.version.toString()
+        inputs.property("version", pluginVersion)
+        filesMatching("plugin.yml") {
+            expand("version" to pluginVersion)
+        }
+    }
+
     test {
         useJUnitPlatform()
         jvmArgs("--enable-native-access=ALL-UNNAMED")

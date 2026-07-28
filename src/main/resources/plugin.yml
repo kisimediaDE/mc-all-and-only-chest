@@ -1,5 +1,5 @@
 name: AllAndOnlyChests
-version: '0.1.0-beta.1'
+version: '${version}'
 main: dev.playmonkeei.allandonlychests.AllAndOnlyChestsPlugin
 api-version: '26.1'
 description: All and Only Chests challenge for Paper
