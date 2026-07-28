@@ -4,10 +4,12 @@
 
 ### Eine Hardcore-Loot-Challenge für Minecraft Java
 
-[![Minecraft](https://img.shields.io/badge/Minecraft-26.1.2%20%7C%2026.2-62B47A?style=for-the-badge&logo=minecraft&logoColor=white)](#kompatibilität)
-[![Paper](https://img.shields.io/badge/Server-Paper-2C2E35?style=for-the-badge)](https://papermc.io/)
-[![Java](https://img.shields.io/badge/Java-25-E76F00?style=for-the-badge&logo=openjdk&logoColor=white)](#voraussetzungen)
-[![Status](https://img.shields.io/badge/Status-Beta-F2B134?style=for-the-badge)](#kompatibilität)
+<p>
+  <a href="#kompatibilität"><img alt="Minecraft 26.1.2 und 26.2" src="https://img.shields.io/badge/Minecraft-26.1.2%20%7C%2026.2-62B47A?style=for-the-badge&logo=minecraft&logoColor=white"></a>&nbsp;
+  <a href="https://papermc.io/"><img alt="Paper Server" src="https://img.shields.io/badge/Server-Paper-2C2E35?style=for-the-badge"></a>&nbsp;
+  <a href="#voraussetzungen"><img alt="Java 25" src="https://img.shields.io/badge/Java-25-E76F00?style=for-the-badge&logo=openjdk&logoColor=white"></a>&nbsp;
+  <a href="#kompatibilität"><img alt="Status Beta" src="https://img.shields.io/badge/Status-Beta-F2B134?style=for-the-badge"></a>
+</p>
 
 **Finde jeden möglichen Gegenstand aus den Truhen von 18 Strukturen –<br>
 aber erhalte sonst nirgendwo Loot. Und du hast nur ein Leben.**
