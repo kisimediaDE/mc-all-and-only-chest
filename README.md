@@ -327,7 +327,7 @@ offiziellen Vanilla-Loot-Tabellen geprüft.
 | Paper 26.2 + Java 25 auf macOS               | ✅ vollständig getestet                       |
 | Paper 26.1.2 + Java 25 auf macOS             | ✅ Start, Gameplay und Persistenz getestet    |
 | Paper 26.1.0 / 26.1.1                        | ⚠️ nicht als eigene Zielversion getestet      |
-| Paper auf Windows + Java 25                  | 🧪 vorgesehen, realer Abschlusstest steht aus |
+| Paper 26.2 + Java 25 auf Windows x64         | ✅ Build, Start und SQLite geprüft            |
 | Spigot / Vanilla / Fabric / Forge / NeoForge | ❌ nicht unterstützt                          |
 
 Ein einziges Plugin-JAR unterstützt Paper 26.1.2 und 26.2. Ziele, die erst in

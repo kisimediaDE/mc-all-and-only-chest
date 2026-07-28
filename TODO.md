@@ -310,12 +310,12 @@ funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft
   - [x] aktive Struktur, `9/17` Ziele und eine Quelle überleben den Neustart
   - [x] kontrollierter Strukturabschluss entfernt das HUD und gibt die nächste
         Auswahl frei
-- [ ] Windows-Test durchführen.
-  - [ ] Java 25
-  - [ ] Gradle-Wrapper und Build
-  - [ ] Windows-Startskript
-  - [ ] SQLite-Treiber
-  - [ ] Paper-Start und Plugin-Laden
+- [x] Windows-x64-Smoke-Test über GitHub Actions durchführen.
+  - [x] Temurin Java 25
+  - [x] Windows-Gradle-Wrapper, automatisierte Tests und Build
+  - [x] Windows-Startskript
+  - [x] eingebetteten Windows-x64-SQLite-Treiber und Datenbankinitialisierung
+  - [x] Paper-26.2-Start, Plugin-Laden und sauberes Herunterfahren
 - [x] automatisierte Tests ergänzen.
   - [x] SQLite-Persistenz
   - [x] Auswahl- und Abschlusslogik
