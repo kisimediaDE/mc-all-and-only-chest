@@ -1,6 +1,10 @@
 @echo off
 setlocal
-cd /d "%~dp0..\run-26.1"
+if defined AOC_TEST_SERVER_DIR (
+    cd /d "%AOC_TEST_SERVER_DIR%"
+) else (
+    cd /d "%~dp0..\run-26.1"
+)
 
 if not exist paper.jar (
     echo Paper 26.1.2 fehlt: %CD%\paper.jar
@@ -10,4 +14,4 @@ if not exist paper.jar (
 )
 
 java -Xms2G -Xmx2G -jar paper.jar --nogui
-pause
+if not defined CI pause
