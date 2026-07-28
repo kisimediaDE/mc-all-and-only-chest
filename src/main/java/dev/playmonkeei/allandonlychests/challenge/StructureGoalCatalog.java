@@ -69,6 +69,31 @@ public final class StructureGoalCatalog {
             Logger logger,
             Function<String, Material> materialResolver
     ) {
+        return load(input, logger, materialResolver, Material::isItem);
+    }
+
+    static StructureGoalCatalog load(
+            InputStream input,
+            Logger logger,
+            Function<String, Material> materialResolver,
+            Predicate<Material> itemPredicate
+    ) {
+        return load(
+                input,
+                logger,
+                materialResolver,
+                itemPredicate,
+                StructureGoal::material
+        );
+    }
+
+    static StructureGoalCatalog load(
+            InputStream input,
+            Logger logger,
+            Function<String, Material> materialResolver,
+            Predicate<Material> itemPredicate,
+            Function<Material, StructureGoal> materialGoalFactory
+    ) {
         YamlConfiguration configuration = new YamlConfiguration();
         try {
             configuration.load(new InputStreamReader(input, StandardCharsets.UTF_8));
@@ -86,10 +111,10 @@ public final class StructureGoalCatalog {
                     category,
                     logger,
                     materialResolver,
-                    Material::isItem
+                    itemPredicate
             );
             for (Material material : resolvedMaterials.values()) {
-                categoryGoals.add(StructureGoal.material(material));
+                categoryGoals.add(materialGoalFactory.apply(material));
             }
 
             if (category == StructureCategory.TRIAL_CHAMBERS) {
@@ -164,7 +189,9 @@ public final class StructureGoalCatalog {
         if (category == StructureCategory.BASTION_REMNANT
                 && BASTION_ENCHANTED_MATERIALS.contains(item.getType())
                 && !item.getEnchantments().isEmpty()) {
-            matches.removeIf(goal -> goal.key().equals(item.getType().getKey().getKey()));
+            matches.removeIf(goal -> goal.key().equals(
+                    StructureGoal.materialKey(item.getType())
+            ));
         }
         return List.copyOf(matches);
     }

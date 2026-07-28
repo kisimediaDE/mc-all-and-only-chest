@@ -19,16 +19,20 @@ public record StructureGoal(
 ) {
 
     public static StructureGoal material(Material material) {
+        return material(material, materialDisplayName(material));
+    }
+
+    static StructureGoal material(Material material, Component displayName) {
         return new StructureGoal(
-                material.getKey().getKey(),
+                materialKey(material),
                 material,
-                materialDisplayName(material),
+                displayName,
                 item -> item.getType() == material
         );
     }
 
     private static Component materialDisplayName(Material material) {
-        String materialKey = material.getKey().getKey();
+        String materialKey = materialKey(material);
         if (!materialKey.startsWith("music_disc_")) {
             return Component.translatable(material.translationKey());
         }
@@ -40,6 +44,10 @@ public record StructureGoal(
             default -> track.replace('_', ' ');
         };
         return Component.text("Schallplatte: " + displayTrack);
+    }
+
+    static String materialKey(Material material) {
+        return material.name().toLowerCase(Locale.ROOT);
     }
 
     public static StructureGoal enchanted(
@@ -75,7 +83,7 @@ public record StructureGoal(
             return "";
         }
 
-        String type = potionMeta.getBasePotionType().getKey().getKey().toLowerCase(Locale.ROOT);
+        String type = potionMeta.getBasePotionType().name().toLowerCase(Locale.ROOT);
         if (type.startsWith("long_")) {
             return type.substring("long_".length());
         }
