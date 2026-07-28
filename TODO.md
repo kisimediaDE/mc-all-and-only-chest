@@ -27,8 +27,11 @@ Stand: 28. Juli 2026
   derselben Plugin-JAR erfolgreich getestet.
 - Automatisierte JUnit-Tests für die bereits manuell bestätigten Kernregeln
   wurden ergänzt. Ausführung: `./gradlew clean test build`
-- Empfohlener nächster Arbeitspunkt: Windows-Kompatibilität und das
-  Release-Paket vorbereiten.
+- Frische Installation ohne Datenbank und Upgrade des abgeschlossenen
+  Snapshot-Spielstands auf `0.1.0-beta.1` wurden in isolierten
+  Paper-Instanzen erfolgreich geprüft. Protokoll:
+  `docs/release-validation-0.1.0-beta.1.md`
+- Empfohlener nächster Arbeitspunkt: realer Windows-Kompatibilitätstest.
 - Serverstart 26.2: `./scripts/start-test-server.sh`
 - Serverstart 26.1.2: `./scripts/start-test-server-26.1.sh`
 
@@ -366,12 +369,12 @@ funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft
   - [x] `structure-goals.yml` erklären
   - [x] Kompatibilitätsstatus dokumentieren
   - [x] finale Screenshots aufnehmen und vorbereitete Bildverweise aktivieren
-- [ ] Release vorbereiten.
-  - [ ] Änderungen bewusst committen
+- [x] Release vorbereiten.
+  - [x] Änderungen bewusst committen
   - [x] Snapshot-Version durch `0.1.0-beta.1` ersetzen
   - [x] automatische Build-, Test- und Release-Aktionen einrichten
-  - [ ] frische Installation ohne Datenbank testen
-  - [ ] Upgrade mit bestehender Datenbank testen
+  - [x] frische Installation ohne Datenbank testen
+  - [x] Upgrade mit bestehender Datenbank testen
   - [x] Release-JAR und SHA-256-Prüfsumme automatisch erzeugen
 
 ## Optionale spätere Verbesserungen
