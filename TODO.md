@@ -316,6 +316,12 @@ funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft
   - [x] Windows-Startskript
   - [x] eingebetteten Windows-x64-SQLite-Treiber und Datenbankinitialisierung
   - [x] Paper-26.2-Start, Plugin-Laden und sauberes Herunterfahren
+- [x] realen Windows-11-Test mit Paper 26.2 und Java 25 durchführen.
+  - [x] Beta 2 wird mit korrekter Versionsangabe geladen
+  - [x] bestehende SQLite-Datenbank und Fortschritt bleiben erhalten
+  - [x] Datenbank-Integritätsprüfung liefert `ok`
+  - [x] Serverstart, Beitritt und sauberer Neustart ohne Pluginfehler
+  - [x] TNT zerstört natürliche Schneeschichten und Schneeblöcke ohne Drops
 - [x] automatisierte Tests ergänzen.
   - [x] SQLite-Persistenz
   - [x] Auswahl- und Abschlusslogik

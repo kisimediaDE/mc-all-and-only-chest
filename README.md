@@ -150,8 +150,8 @@ benötigten SQLite-Treiber direkt im JAR; es ist keine separate
 Datenbankinstallation vorgesehen.
 
 > [!NOTE]
-> macOS wurde vollständig getestet. Ein abschließender realer Windows-Test
-> steht für die Beta noch aus.
+> Das Plugin wurde auf macOS und auf einem realen Windows-11-System mit
+> Java 25 und Paper 26.2 getestet.
 
 ## Spielen
 
@@ -327,7 +327,7 @@ offiziellen Vanilla-Loot-Tabellen geprüft.
 | Paper 26.2 + Java 25 auf macOS               | ✅ vollständig getestet                       |
 | Paper 26.1.2 + Java 25 auf macOS             | ✅ Start, Gameplay und Persistenz getestet    |
 | Paper 26.1.0 / 26.1.1                        | ⚠️ nicht als eigene Zielversion getestet      |
-| Paper 26.2 + Java 25 auf Windows x64         | ✅ Build, Start und SQLite geprüft            |
+| Paper 26.2 + Java 25 auf Windows x64         | ✅ Start, SQLite, Neustart und Gameplay geprüft |
 | Spigot / Vanilla / Fabric / Forge / NeoForge | ❌ nicht unterstützt                          |
 
 Ein einziges Plugin-JAR unterstützt Paper 26.1.2 und 26.2. Ziele, die erst in
