@@ -25,11 +25,27 @@ Stand: 28. Juli 2026
     verschwindet beim Struktur- beziehungsweise Gesamtabschluss
 - Paper 26.1.2 Build 74 wurde in `run-26.1/` separat eingerichtet und mit
   derselben Plugin-JAR erfolgreich getestet.
-- Empfohlener nächster Arbeitspunkt: Windows-Kompatibilität vorbereiten oder
-  automatisierte Tests für die bereits manuell bestätigten Kernregeln
-  ergänzen.
+- Automatisierte JUnit-Tests für die bereits manuell bestätigten Kernregeln
+  wurden ergänzt. Ausführung: `./gradlew clean test build`
+- Empfohlener nächster Arbeitspunkt: Windows-Kompatibilität und das
+  Release-Paket vorbereiten.
 - Serverstart 26.2: `./scripts/start-test-server.sh`
 - Serverstart 26.1.2: `./scripts/start-test-server-26.1.sh`
+
+## Automatisierte Tests
+
+- [x] JUnit 5 und reproduzierbaren Testlauf in Gradle eingerichtet.
+- [x] Auswahl einer Struktur und Sperre einer zweiten aktiven Struktur.
+- [x] Fortschritt und aktive Struktur über SQLite-Neustart erhalten.
+- [x] dieselbe Loot-Quelle wird nur einmal gezählt.
+- [x] Abschluss einer Struktur entfernt die aktive Auswahl.
+- [x] gezielter Strukturreset löscht nur Ziele und Quellen der Zielstruktur.
+- [x] globaler Reset löscht Auswahl, Ziele, Quellen und Siegstatus.
+- [x] Übergang der letzten von 18 Kategorien zum Gesamtsieg.
+- [x] gezielter Reset nach Gesamtsieg öffnet die Challenge wieder.
+- [x] Versionsfilter: Minenstollen hat unter 26.2 22 Ziele und unter 26.1
+      ohne `music_disc_bounce` 21 Ziele.
+- [x] doppelte Zielnamen in allen konfigurierten Kategorien ausgeschlossen.
 
 ## Offene Prüfungskammer-Nachtests
 

@@ -15,6 +15,11 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:26.2.build.+")
     implementation("org.xerial:sqlite-jdbc:3.53.2.0")
+
+    testImplementation("io.papermc.paper:paper-api:26.2.build.+")
+    testImplementation(platform("org.junit:junit-bom:5.13.4"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 java {
@@ -24,6 +29,11 @@ java {
 }
 
 tasks {
+    test {
+        useJUnitPlatform()
+        jvmArgs("--enable-native-access=ALL-UNNAMED")
+    }
+
     compileJava {
         options.encoding = "UTF-8"
         options.release = 25

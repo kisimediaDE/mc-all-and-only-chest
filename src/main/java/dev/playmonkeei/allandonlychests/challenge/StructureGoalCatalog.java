@@ -13,8 +13,11 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -47,29 +50,45 @@ public final class StructureGoalCatalog {
     }
 
     public static StructureGoalCatalog load(Plugin plugin, Logger logger) {
-        YamlConfiguration configuration = new YamlConfiguration();
-
         try (InputStream input = plugin.getResource("structure-goals.yml")) {
             if (input == null) {
                 throw new IllegalStateException("Missing structure-goals.yml");
             }
+            return load(
+                    input,
+                    logger,
+                    materialName -> Material.matchMaterial("minecraft:" + materialName)
+            );
+        } catch (IOException exception) {
+            throw new IllegalStateException("Could not load structure goal catalog", exception);
+        }
+    }
+
+    static StructureGoalCatalog load(
+            InputStream input,
+            Logger logger,
+            Function<String, Material> materialResolver
+    ) {
+        YamlConfiguration configuration = new YamlConfiguration();
+        try {
             configuration.load(new InputStreamReader(input, StandardCharsets.UTF_8));
         } catch (IOException | org.bukkit.configuration.InvalidConfigurationException exception) {
             throw new IllegalStateException("Could not load structure goal catalog", exception);
         }
 
         Map<StructureCategory, List<StructureGoal>> goals = new EnumMap<>(StructureCategory.class);
+        boolean musicDiscBounceAvailable =
+                materialResolver.apply("music_disc_bounce") != null;
         for (StructureCategory category : StructureCategory.values()) {
             List<StructureGoal> categoryGoals = new ArrayList<>();
-            for (String materialName : configuration.getStringList(category.id())) {
-                Material material = Material.matchMaterial("minecraft:" + materialName);
-                if (material == null || !material.isItem()) {
-                    logger.info(
-                            "Skipping structure goal unavailable in this Minecraft version: "
-                                    + materialName + " (" + category.id() + ")"
-                    );
-                    continue;
-                }
+            Map<String, Material> resolvedMaterials = availableMaterials(
+                    configuration.getStringList(category.id()),
+                    category,
+                    logger,
+                    materialResolver,
+                    Material::isItem
+            );
+            for (Material material : resolvedMaterials.values()) {
                 categoryGoals.add(StructureGoal.material(material));
             }
 
@@ -91,7 +110,7 @@ public final class StructureGoalCatalog {
             if (distinctKeys != categoryGoals.size()) {
                 throw new IllegalStateException("Duplicate goal key in " + category.id());
             }
-            int expectedCount = expectedGoalCount(category);
+            int expectedCount = expectedGoalCount(category, musicDiscBounceAvailable);
             if (categoryGoals.size() != expectedCount) {
                 throw new IllegalStateException(
                         "Expected " + expectedCount + " goals for " + category.id()
@@ -101,6 +120,28 @@ public final class StructureGoalCatalog {
             goals.put(category, List.copyOf(categoryGoals));
         }
         return new StructureGoalCatalog(goals);
+    }
+
+    static Map<String, Material> availableMaterials(
+            List<String> materialNames,
+            StructureCategory category,
+            Logger logger,
+            Function<String, Material> materialResolver,
+            Predicate<Material> itemPredicate
+    ) {
+        Map<String, Material> available = new LinkedHashMap<>();
+        for (String materialName : materialNames) {
+            Material material = materialResolver.apply(materialName);
+            if (material == null || !itemPredicate.test(material)) {
+                logger.info(
+                        "Skipping structure goal unavailable in this Minecraft version: "
+                                + materialName + " (" + category.id() + ")"
+                );
+                continue;
+            }
+            available.put(materialName, material);
+        }
+        return Collections.unmodifiableMap(available);
     }
 
     public List<StructureGoal> goalsFor(StructureCategory category) {
@@ -233,7 +274,10 @@ public final class StructureGoalCatalog {
         );
     }
 
-    private static int expectedGoalCount(StructureCategory category) {
+    private static int expectedGoalCount(
+            StructureCategory category,
+            boolean musicDiscBounceAvailable
+    ) {
         return switch (category) {
             case ANCIENT_CITY -> 33;
             case BURIED_TREASURE -> 17;
@@ -247,8 +291,7 @@ public final class StructureGoalCatalog {
             case RUINED_PORTAL -> 26;
             case SHIPWRECK -> 36;
             case STRONGHOLD -> 27;
-            case MINESHAFT ->
-                    Material.matchMaterial("minecraft:music_disc_bounce") == null ? 21 : 22;
+            case MINESHAFT -> musicDiscBounceAvailable ? 22 : 21;
             case VILLAGE -> 89;
             case WOODLAND_MANSION -> 25;
             case MONSTER_ROOM -> 26;
