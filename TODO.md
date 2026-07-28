@@ -2,39 +2,6 @@
 
 Stand: 28. Juli 2026
 
-## Aktueller Wiedereinstieg
-
-- Der Paper-Testserver wurde zum Tagesabschluss sauber gestoppt.
-- Gespeicherter Spielstand: alle `18/18` Strukturen abgeschlossen,
-  `challenge_won = true`, keine aktive Struktur.
-- Tagesabschluss-Sicherung:
-  `run/backups/end-of-day-2026-07-27/`
-  - `challenge.db`: geprüfte SQLite-Datenbank (`PRAGMA integrity_check = ok`)
-  - `AllAndOnlyChests-0.1.0-SNAPSHOT.jar`: aktuell getestetes Plugin
-  - JAR-SHA-256:
-    `40a5517fd83b55b4ed7b034290fd5a97215c410979edacf875d94fc900ae395f`
-- Zuletzt fertiggestellt und getestet:
-  - repräsentative Ingame-Tests aller 18 Strukturkategorien
-  - natürlicher vollständiger End-to-End-Abschluss des vergrabenen Schatzes
-  - Gesamtsieg bei `18/18`
-  - eindeutige Namen für unterschiedliche Schallplatten
-  - Sidebar auf die aktuelle Component-API umgestellt; rote Score-Zahlen
-    entfernt
-  - `/chesthud sidebar`, `/chesthud bossbar` und `/chesthud off`
-  - BossBar-Fortschritt aktualisiert sich beim Öffnen einer Quelle und
-    verschwindet beim Struktur- beziehungsweise Gesamtabschluss
-- Paper 26.1.2 Build 74 wurde in `run-26.1/` separat eingerichtet und mit
-  derselben Plugin-JAR erfolgreich getestet.
-- Automatisierte JUnit-Tests für die bereits manuell bestätigten Kernregeln
-  wurden ergänzt. Ausführung: `./gradlew clean test build`
-- Frische Installation ohne Datenbank und Upgrade des abgeschlossenen
-  Snapshot-Spielstands auf `0.1.0-beta.1` wurden in isolierten
-  Paper-Instanzen erfolgreich geprüft. Protokoll:
-  `docs/release-validation-0.1.0-beta.1.md`
-- Empfohlener nächster Arbeitspunkt: realer Windows-Kompatibilitätstest.
-- Serverstart 26.2: `./scripts/start-test-server.sh`
-- Serverstart 26.1.2: `./scripts/start-test-server-26.1.sh`
-
 ## Automatisierte Tests
 
 - [x] JUnit 5 und reproduzierbaren Testlauf in Gradle eingerichtet.
@@ -383,7 +350,11 @@ funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft
 - [ ] optionales Resource-Pack-HUD prüfen.
 - [ ] Texte und Farben konfigurierbar machen.
 - [ ] Admin-Befehl zum temporären Umschalten normaler Drops prüfen.
-- [ ] Fortschritts-Backup oder Export anbieten.
+- [x] Manuellen Fortschritts-Export und sichere Wiederherstellung dokumentieren.
+  - [x] vollständigen Plugin-Zustand über `plugins/AllAndOnlyChests` sichern
+  - [x] Welt und Plugin-Daten gemeinsam sichern und wiederherstellen
+  - [x] SQLite-Hinweis für laufende Server dokumentieren
+- [ ] Optionalen Admin-Befehl oder automatische versionierte Backups prüfen.
 - [ ] Mehrspielerbetrieb mit globalem oder getrenntem Fortschritt definieren.
 
 ## Festgehaltene Entscheidungen
