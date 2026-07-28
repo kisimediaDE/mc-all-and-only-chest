@@ -5,7 +5,7 @@
 ### Eine Hardcore-Loot-Challenge für Minecraft Java
 
 <p>
-  <a href="#kompatibilität"><img alt="Minecraft 26.1.2 und 26.2" src="https://img.shields.io/badge/Minecraft-26.1.2%20%7C%2026.2-62B47A?style=for-the-badge&logo=minecraft&logoColor=white"></a>&nbsp;&nbsp;<a href="https://papermc.io/"><img alt="Paper Server" src="https://img.shields.io/badge/Server-Paper-2C2E35?style=for-the-badge"></a>&nbsp;&nbsp;<a href="#voraussetzungen"><img alt="Java 25" src="https://img.shields.io/badge/Java-25-E76F00?style=for-the-badge&logo=openjdk&logoColor=white"></a>&nbsp;&nbsp;<a href="#kompatibilität"><img alt="Status Beta" src="https://img.shields.io/badge/Status-Beta-F2B134?style=for-the-badge"></a>
+  <a href="#kompatibilität"><img alt="Minecraft 26.1.2 und 26.2" src="https://img.shields.io/badge/Minecraft-26.1.2%20%7C%2026.2-62B47A?style=for-the-badge&logo=minecraft&logoColor=white"></a>&nbsp;&nbsp;<a href="https://papermc.io/"><img alt="Paper Server" src="https://img.shields.io/badge/Server-Paper-2C2E35?style=for-the-badge"></a>&nbsp;&nbsp;<a href="#voraussetzungen"><img alt="Java 25" src="https://img.shields.io/badge/Java-25-E76F00?style=for-the-badge&logo=openjdk&logoColor=white"></a>&nbsp;&nbsp;<a href="#kompatibilität"><img alt="Status Beta" src="https://img.shields.io/badge/Status-Beta-F2B134?style=for-the-badge"></a>&nbsp;&nbsp;<a href="#lizenz"><img alt="Lizenz 0BSD" src="https://img.shields.io/badge/Lizenz-0BSD-7B61FF?style=for-the-badge"></a>
 </p>
 
 **Finde jeden möglichen Gegenstand aus den Truhen von 18 Strukturen –<br>
@@ -332,6 +332,19 @@ offiziellen Vanilla-Loot-Tabellen geprüft.
 
 Ein einziges Plugin-JAR unterstützt Paper 26.1.2 und 26.2. Ziele, die erst in
 26.2 verfügbar sind, werden auf 26.1.2 automatisch übersprungen.
+
+## Lizenz
+
+All & Only Chests steht unter der
+[Zero-Clause BSD License](LICENSE) (`0BSD`). Du darfst das Plugin für private
+und kommerzielle Zwecke verwenden, kopieren, verändern und weiterverbreiten.
+Eine Namensnennung ist nicht vorgeschrieben.
+
+Die Challenge-Idee wurde unter anderem durch BastiGHG bekannt. Diese
+eigenständige Neuimplementierung wurde vom
+[Original-Plugin von Skippaddin](https://github.com/Skippaddin/All-and-Only-Chests)
+inspiriert, ist aber weder damit verbunden noch offiziell von dessen Autor
+unterstützt. Für das Original gelten dessen eigene Lizenzbedingungen.
 
 ## Fehler melden
 
