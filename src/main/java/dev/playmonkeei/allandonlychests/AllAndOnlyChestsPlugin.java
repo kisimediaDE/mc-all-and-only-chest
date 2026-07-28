@@ -61,7 +61,7 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
                 this
         );
         getServer().getPluginManager().registerEvents(
-                new ExplosionDropListener(placedBlockRepository, getLogger()),
+                new ExplosionDropListener(this, placedBlockRepository, getLogger()),
                 this
         );
         getServer().getPluginManager().registerEvents(new FishingDropListener(), this);

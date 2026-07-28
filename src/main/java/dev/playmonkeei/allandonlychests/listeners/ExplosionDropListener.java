@@ -5,11 +5,13 @@ import dev.playmonkeei.allandonlychests.storage.PlacedBlockRepository;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -23,10 +25,16 @@ import java.util.logging.Logger;
  */
 public final class ExplosionDropListener implements Listener {
 
+    private final Plugin plugin;
     private final PlacedBlockRepository repository;
     private final Logger logger;
 
-    public ExplosionDropListener(PlacedBlockRepository repository, Logger logger) {
+    public ExplosionDropListener(
+            Plugin plugin,
+            PlacedBlockRepository repository,
+            Logger logger
+    ) {
+        this.plugin = plugin;
         this.repository = repository;
         this.logger = logger;
     }
@@ -54,8 +62,9 @@ public final class ExplosionDropListener implements Listener {
     }
 
     private void processAffectedBlocks(List<Block> blocks) {
+        List<Block> affectedBlocks = List.copyOf(blocks);
         Set<Block> secondaryBlocks = new LinkedHashSet<>();
-        for (Block block : List.copyOf(blocks)) {
+        for (Block block : affectedBlocks) {
             Block blockAbove = block.getRelative(BlockFace.UP);
             if (canBecomeUnsupported(blockAbove)) {
                 secondaryBlocks.add(blockAbove);
@@ -73,6 +82,34 @@ public final class ExplosionDropListener implements Listener {
             secondaryBlock.setType(Material.AIR, false);
             blocks.remove(secondaryBlock);
         }
+
+        removeDelayedExplosionDrops(affectedBlocks);
+    }
+
+    private void removeDelayedExplosionDrops(List<Block> affectedBlocks) {
+        if (affectedBlocks.isEmpty()) {
+            return;
+        }
+
+        // Paper can create special block drops (notably snowballs) through a
+        // later physics/loot step even though the explosion yield is zero.
+        // On the next tick, remove only brand-new item entities immediately
+        // around blocks that this exact explosion destroyed.
+        plugin.getServer().getScheduler().runTask(plugin, () -> {
+            Set<Item> delayedDrops = new LinkedHashSet<>();
+            for (Block block : affectedBlocks) {
+                var center = block.getLocation().add(0.5, 0.5, 0.5);
+                block.getWorld().getNearbyEntities(
+                        center,
+                        1.0,
+                        1.0,
+                        1.0,
+                        entity -> entity instanceof Item item
+                                && item.getTicksLived() <= 2
+                ).forEach(entity -> delayedDrops.add((Item) entity));
+            }
+            delayedDrops.forEach(Item::remove);
+        });
     }
 
     private static boolean canBecomeUnsupported(Block block) {

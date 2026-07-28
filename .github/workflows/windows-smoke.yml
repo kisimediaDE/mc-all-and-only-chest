@@ -35,6 +35,14 @@ jobs:
         shell: pwsh
         run: .\scripts\smoke-test-windows.ps1
 
+      - name: Upload Windows-tested plugin
+        uses: actions/upload-artifact@v6
+        with:
+          name: windows-tested-plugin-${{ github.sha }}
+          path: build/libs/AllAndOnlyChests-*.jar
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Upload Paper logs
         if: always()
         uses: actions/upload-artifact@v6
