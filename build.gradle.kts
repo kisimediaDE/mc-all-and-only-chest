@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "dev.playmonkeei"
-version = "0.1.0-SNAPSHOT"
+version = "0.1.0-beta.1"
 
 repositories {
     maven {
