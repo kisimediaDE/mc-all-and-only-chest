@@ -1,27 +1,31 @@
 # All and Only Chests – Arbeitsliste
 
-Stand: 24. Juli 2026
+Stand: 27. Juli 2026
 
 ## Aktueller Wiedereinstieg
 
 - Der Paper-Testserver wurde zum Tagesabschluss sauber gestoppt.
-- Gespeicherter Spielstand: `6/18`, Antike Stadt aktiv, `0/33` Items,
-  `0` Kisten/Quellen, kein Gesamtsieg gesetzt.
-- Abgeschlossen: Endsiedlung, Iglu, Dschungelpyramide, Festung,
-  Bastionsruine und Prüfungskammern.
+- Gespeicherter Spielstand: alle `18/18` Strukturen abgeschlossen,
+  `challenge_won = true`, keine aktive Struktur.
 - Tagesabschluss-Sicherung:
-  `run/backups/end-of-day-2026-07-24/`
+  `run/backups/end-of-day-2026-07-27/`
   - `challenge.db`: geprüfte SQLite-Datenbank (`PRAGMA integrity_check = ok`)
   - `AllAndOnlyChests-0.1.0-SNAPSHOT.jar`: aktuell getestetes Plugin
+  - JAR-SHA-256:
+    `40a5517fd83b55b4ed7b034290fd5a97215c410979edacf875d94fc900ae395f`
 - Zuletzt fertiggestellt und getestet:
-  - Gesamtsieg bei `18/18`, einmalige Meldung und Persistenz nach Neustart
-  - `/structurecomplete all`
-  - `/structurereset <Kategorie> confirm`
-  - Endertruhen als persönliche Lagerung ohne Strukturfortschritt
-  - natürliche und selbst platzierte Endertruhen jeweils mit und ohne
-    Silk Touch
-- Empfohlener nächster Arbeitspunkt: indirekte Itemquellen systematisch
-  prüfen und sperren, beginnend mit Angeln, Item Frames und Gemälden.
+  - repräsentative Ingame-Tests aller 18 Strukturkategorien
+  - natürlicher vollständiger End-to-End-Abschluss des vergrabenen Schatzes
+  - Gesamtsieg bei `18/18`
+  - eindeutige Namen für unterschiedliche Schallplatten
+  - Sidebar auf die aktuelle Component-API umgestellt; rote Score-Zahlen
+    entfernt
+  - `/chesthud sidebar`, `/chesthud bossbar` und `/chesthud off`
+  - BossBar-Fortschritt aktualisiert sich beim Öffnen einer Quelle und
+    verschwindet beim Struktur- beziehungsweise Gesamtabschluss
+- Empfohlener nächster Arbeitspunkt: separaten Paper-26.1/26.1.2-Testserver
+  einrichten und Start-, Katalog- und repräsentative Gameplay-Tests
+  durchführen, ohne den funktionierenden 26.2-Testserver zu verändern.
 - Serverstart: `./scripts/start-test-server.sh`
 
 ## Offene Prüfungskammer-Nachtests
@@ -318,7 +322,7 @@ funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft
   - [ ] Item-Matcher
   - [x] Kataloggrößen für 26.1 und 26.2 beim Pluginstart abgesichert
   - [ ] Trial- und Bastion-Sonderfälle
-- [ ] Sidebar auf die aktuelle Component-API umstellen.
+- [x] Sidebar auf die aktuelle Component-API umstellen.
 - [x] Itemvarianten in Chatmeldungen eindeutig benennen.
   - [x] unterschiedliche Schallplatten nicht beide nur als „Schallplatte“
         anzeigen, sondern beispielsweise „C418 – 13“ und „C418 – cat“
@@ -338,7 +342,7 @@ funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft
 
 ## Optionale spätere Verbesserungen
 
-- [ ] BossBar als Alternative zur Sidebar anbieten.
+- [x] BossBar als Alternative zur Sidebar anbieten.
 - [ ] optionales Resource-Pack-HUD prüfen.
 - [ ] Texte und Farben konfigurierbar machen.
 - [ ] Admin-Befehl zum temporären Umschalten normaler Drops prüfen.
@@ -357,5 +361,6 @@ funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft
 - Vaults und Trial Spawner zählen als legale Prüfungskammer-Quellen.
 - Besuche werden pro eindeutiger Loot-Quelle gezählt; erneutes Öffnen derselben
   Kiste erhöht den Zähler nicht.
-- Die Sidebar bleibt vorerst unverändert. Eine BossBar oder ein Resource Pack
-  ist nur eine optionale spätere Erweiterung.
+- Die Sidebar verwendet die aktuelle Component-API. Über `/chesthud` kann
+  zwischen Sidebar, BossBar und ausgeblendeter Anzeige gewechselt werden.
+  Ein Resource Pack bleibt eine optionale spätere Erweiterung.
