@@ -366,6 +366,8 @@ funktionierten. Beim Dorf wurde die Sperre einer nicht aktiven Struktur geprüft
 ## Optionale spätere Verbesserungen
 
 - [x] BossBar als Alternative zur Sidebar anbieten.
+- [x] gewählten HUD-Modus pro Spieler über Reconnects und Serverneustarts
+  hinweg speichern.
 - [ ] optionales Resource-Pack-HUD prüfen.
 - [ ] Texte und Farben konfigurierbar machen.
 - [ ] Admin-Befehl zum temporären Umschalten normaler Drops prüfen.

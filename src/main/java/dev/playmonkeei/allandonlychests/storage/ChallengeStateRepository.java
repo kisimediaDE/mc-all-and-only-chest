@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Stores the global challenge selection independently of a server restart.
@@ -54,6 +55,15 @@ public final class ChallengeStateRepository implements AutoCloseable {
                 PRIMARY KEY (category_id, source_key)
             )
             """;
+    private static final String CREATE_PLAYER_SETTINGS_TABLE = """
+            CREATE TABLE IF NOT EXISTS player_settings (
+                player_uuid TEXT NOT NULL,
+                setting_key TEXT NOT NULL,
+                setting_value TEXT NOT NULL,
+                PRIMARY KEY (player_uuid, setting_key)
+            )
+            """;
+    private static final String HUD_MODE_SETTING = "hud_mode";
 
     private final Path databasePath;
     private final Map<StructureCategory, Set<String>> foundGoals =
@@ -85,6 +95,7 @@ public final class ChallengeStateRepository implements AutoCloseable {
                 statement.execute(CREATE_FOUND_GOALS_TABLE);
                 statement.execute(CREATE_COMPLETED_STRUCTURES_TABLE);
                 statement.execute(CREATE_VISITED_SOURCES_TABLE);
+                statement.execute(CREATE_PLAYER_SETTINGS_TABLE);
             }
 
             activeStructure = readActiveStructure().orElse(null);
@@ -192,6 +203,46 @@ public final class ChallengeStateRepository implements AutoCloseable {
     public boolean hasWon() {
         requireOpen();
         return challengeWon;
+    }
+
+    public Optional<String> hudMode(UUID playerId) {
+        requireOpen();
+        String sql = """
+                SELECT setting_value
+                FROM player_settings
+                WHERE player_uuid = ? AND setting_key = ?
+                """;
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, playerId.toString());
+            statement.setString(2, HUD_MODE_SETTING);
+            try (ResultSet result = statement.executeQuery()) {
+                return result.next()
+                        ? Optional.of(result.getString("setting_value"))
+                        : Optional.empty();
+            }
+        } catch (SQLException exception) {
+            throw new IllegalStateException("Failed to read the player's HUD mode", exception);
+        }
+    }
+
+    public void setHudMode(UUID playerId, String mode) {
+        requireOpen();
+        String sql = """
+                INSERT INTO player_settings (player_uuid, setting_key, setting_value)
+                VALUES (?, ?, ?)
+                ON CONFLICT(player_uuid, setting_key)
+                DO UPDATE SET setting_value = excluded.setting_value
+                """;
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, playerId.toString());
+            statement.setString(2, HUD_MODE_SETTING);
+            statement.setString(3, mode);
+            statement.executeUpdate();
+        } catch (SQLException exception) {
+            throw new IllegalStateException("Failed to persist the player's HUD mode", exception);
+        }
     }
 
     /**

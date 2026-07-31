@@ -9,6 +9,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -211,6 +212,30 @@ class ChallengeStateRepositoryTest {
                     StructureCategory.END_CITY,
                     repository.activeStructure().orElseThrow()
             );
+        }
+    }
+
+    @Test
+    void hudModeSurvivesRestartAndChallengeReset() {
+        Path database = temporaryDirectory.resolve("challenge.db");
+        UUID playerId = UUID.randomUUID();
+
+        try (ChallengeStateRepository repository = open(database)) {
+            assertTrue(repository.hudMode(playerId).isEmpty());
+            repository.setHudMode(playerId, "bossbar");
+        }
+
+        try (ChallengeStateRepository repository = open(database)) {
+            assertEquals("bossbar", repository.hudMode(playerId).orElseThrow());
+
+            repository.resetProgress();
+
+            assertEquals("bossbar", repository.hudMode(playerId).orElseThrow());
+            repository.setHudMode(playerId, "off");
+        }
+
+        try (ChallengeStateRepository repository = open(database)) {
+            assertEquals("off", repository.hudMode(playerId).orElseThrow());
         }
     }
 

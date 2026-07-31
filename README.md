@@ -184,6 +184,8 @@ Verfügung:
 ```
 
 `/chesthud` ohne Argument wechselt der Reihe nach zwischen den drei Varianten.
+Die Auswahl wird pro Spieler gespeichert und nach einem erneuten Verbinden oder
+Serverneustart automatisch wiederhergestellt.
 
 <table>
   <tr>

@@ -57,7 +57,7 @@ public final class ChallengeSidebar implements Listener, TabExecutor {
     }
 
     public void refresh(Player player) {
-        HudMode mode = modes.getOrDefault(player.getUniqueId(), HudMode.SIDEBAR);
+        HudMode mode = modeFor(player.getUniqueId());
         if (mode == HudMode.OFF) {
             clearHud(player);
             return;
@@ -180,6 +180,8 @@ public final class ChallengeSidebar implements Listener, TabExecutor {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+        UUID playerId = event.getPlayer().getUniqueId();
+        modes.put(playerId, loadMode(playerId));
         refresh(event.getPlayer());
     }
 
@@ -203,7 +205,7 @@ public final class ChallengeSidebar implements Listener, TabExecutor {
 
         HudMode mode;
         if (args.length == 0) {
-            mode = modes.getOrDefault(player.getUniqueId(), HudMode.SIDEBAR).next();
+            mode = modeFor(player.getUniqueId()).next();
         } else if (args.length == 1) {
             mode = HudMode.fromArgument(args[0]);
             if (mode == null) {
@@ -221,7 +223,9 @@ public final class ChallengeSidebar implements Listener, TabExecutor {
             return true;
         }
 
-        modes.put(player.getUniqueId(), mode);
+        UUID playerId = player.getUniqueId();
+        stateRepository.setHudMode(playerId, mode.storedValue());
+        modes.put(playerId, mode);
         refresh(player);
         player.sendMessage(mode.confirmation());
         return true;
@@ -263,6 +267,16 @@ public final class ChallengeSidebar implements Listener, TabExecutor {
         }
     }
 
+    private HudMode modeFor(UUID playerId) {
+        return modes.computeIfAbsent(playerId, this::loadMode);
+    }
+
+    private HudMode loadMode(UUID playerId) {
+        return stateRepository.hudMode(playerId)
+                .map(HudMode::fromStoredValue)
+                .orElse(HudMode.SIDEBAR);
+    }
+
     private enum HudMode {
         SIDEBAR,
         BOSSBAR,
@@ -283,6 +297,15 @@ public final class ChallengeSidebar implements Listener, TabExecutor {
                 case "off", "aus" -> OFF;
                 default -> null;
             };
+        }
+
+        private static HudMode fromStoredValue(String value) {
+            HudMode mode = fromArgument(value);
+            return mode == null ? SIDEBAR : mode;
+        }
+
+        private String storedValue() {
+            return name().toLowerCase(Locale.ROOT);
         }
 
         private Component confirmation() {
