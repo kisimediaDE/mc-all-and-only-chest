@@ -30,6 +30,10 @@ commands:
     description: Wählt Sidebar, BossBar oder eine ausgeblendete Challenge-Anzeige.
     usage: /chesthud [sidebar|bossbar|off]
     permission: allandonlychests.command.chesthud
+  elytradrop:
+    description: Erlaubt oder sperrt die Elytra aus natürlichen Item Frames.
+    usage: /elytradrop [on|off|status]
+    permission: allandonlychests.command.elytradrop
 
 permissions:
   allandonlychests.command.gui:
@@ -50,3 +54,6 @@ permissions:
   allandonlychests.command.chesthud:
     description: Erlaubt das Umschalten der Challenge-Anzeige.
     default: true
+  allandonlychests.command.elytradrop:
+    description: Erlaubt das Umschalten des natürlichen Elytra-Drops.
+    default: op

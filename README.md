@@ -228,8 +228,16 @@ Diese Befehle sind standardmäßig nur für Operatoren freigegeben:
 | `/structurecomplete all`              | Schließt alle noch offenen Kategorien ab. Nur für Tests empfohlen.                      |
 | `/structurereset <Kategorie> confirm` | Setzt genau eine Kategorie inklusive Ziele und Quellenzähler zurück.                    |
 | `/reset confirm`                      | Löscht den gesamten Plugin-Fortschritt und alle Markierungen selbst platzierter Blöcke. |
+| `/elytradrop on`                      | Erlaubt das einmalige Lösen der Elytra aus einem natürlichen Rahmen.                    |
+| `/elytradrop off`                     | Schützt natürliche Elytra-Rahmen wieder vollständig.                                    |
+| `/elytradrop status`                  | Zeigt den aktuellen Elytra-Drop-Status.                                                  |
 
 `/reset` und `/structurereset` verändern oder löschen **keine Weltdateien**.
+
+Der Elytra-Drop ist standardmäßig ausgeschaltet. Bei aktivierter Option darf
+nur die Elytra aus einem natürlichen Rahmen gelöst werden. Der Rahmen selbst
+und natürliche Rahmen mit anderen Gegenständen bleiben geschützt. Die
+Einstellung wird in `plugins/AllAndOnlyChests/config.yml` gespeichert.
 
 <details>
 <summary><strong>Gültige Kategorie-IDs für Admin-Befehle anzeigen</strong></summary>

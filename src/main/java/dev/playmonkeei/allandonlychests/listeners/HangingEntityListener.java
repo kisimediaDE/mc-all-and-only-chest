@@ -1,5 +1,6 @@
 package dev.playmonkeei.allandonlychests.listeners;
 
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.ItemFrame;
@@ -14,7 +15,10 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.function.BooleanSupplier;
 
 /**
  * Keeps naturally generated hanging entities from becoming item sources while
@@ -25,13 +29,16 @@ public final class HangingEntityListener implements Listener {
 
     private final NamespacedKey playerPlacedKey;
     private final NamespacedKey legacyItemFrameKey;
+    private final BooleanSupplier naturalElytraDropEnabled;
 
     public HangingEntityListener(
             NamespacedKey playerPlacedKey,
-            NamespacedKey legacyItemFrameKey
+            NamespacedKey legacyItemFrameKey,
+            BooleanSupplier naturalElytraDropEnabled
     ) {
         this.playerPlacedKey = playerPlacedKey;
         this.legacyItemFrameKey = legacyItemFrameKey;
+        this.naturalElytraDropEnabled = naturalElytraDropEnabled;
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -69,6 +76,22 @@ public final class HangingEntityListener implements Listener {
 
         event.setCancelled(true);
         if (event.getDamager() instanceof Player player) {
+            if (hanging instanceof ItemFrame itemFrame
+                    && canReleaseNaturalFrameItem(
+                    naturalElytraDropEnabled.getAsBoolean(),
+                    itemFrame.getItem().getType()
+            )) {
+                ItemStack elytra = itemFrame.getItem().clone();
+                itemFrame.setItem(new ItemStack(Material.AIR), false);
+                itemFrame.getWorld().dropItemNaturally(
+                        itemFrame.getLocation(),
+                        elytra
+                );
+                player.sendMessage(
+                        "§aDie Elytra wurde aus dem natürlichen Rahmen gelöst."
+                );
+                return;
+            }
             sendNaturalMessage(player, hanging);
         }
     }
@@ -100,6 +123,14 @@ public final class HangingEntityListener implements Listener {
                         legacyItemFrameKey,
                         PersistentDataType.BYTE
                 );
+    }
+
+    static boolean canReleaseNaturalFrameItem(
+            boolean naturalElytraDropEnabled,
+            Material displayedMaterial
+    ) {
+        return naturalElytraDropEnabled
+                && displayedMaterial == Material.ELYTRA;
     }
 
     private static void sendNaturalMessage(Player player, Hanging hanging) {

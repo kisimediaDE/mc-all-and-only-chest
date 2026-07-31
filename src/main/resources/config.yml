@@ -1,0 +1,5 @@
+# If enabled, players may remove the naturally generated Elytra from its
+# protected item frame. The frame itself and all other natural frames remain
+# protected.
+gameplay:
+  allow-natural-elytra-drop: false

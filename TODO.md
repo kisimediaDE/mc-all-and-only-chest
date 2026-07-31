@@ -80,6 +80,11 @@ Stand: 28. Juli 2026
     - [x] Player-Placed-Markierung bleibt nach Serverneustart erhalten
     - [x] natürlicher Rahmen bleibt bei Supportverlust gesperrt; Rahmen und
           Inhalt bleiben ohne Drop erhalten
+    - [ ] optionalen natürlichen Elytra-Drop testen
+      - [ ] `/elytradrop on|off|status` und Speicherung nach Neustart
+      - [ ] aktiv: Elytra droppt genau einmal, der Rahmen bleibt geschützt
+      - [ ] deaktiviert: Elytra und Rahmen bleiben vollständig geschützt
+      - [ ] andere natürliche und selbst platzierte Rahmen bleiben unverändert
   - [x] Gemälde und andere Hanging Entities
     - [x] per Command erzeugtes, nicht markiertes Gemälde bleibt geschützt
     - [x] selbst platziertes Gemälde droppt normal

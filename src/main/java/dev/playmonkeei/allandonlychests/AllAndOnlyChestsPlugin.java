@@ -1,6 +1,7 @@
 package dev.playmonkeei.allandonlychests;
 
 import dev.playmonkeei.allandonlychests.challenge.StructureGoalCatalog;
+import dev.playmonkeei.allandonlychests.commands.ElytraDropCommand;
 import dev.playmonkeei.allandonlychests.commands.StructureCompleteCommand;
 import dev.playmonkeei.allandonlychests.commands.StructureResetCommand;
 import dev.playmonkeei.allandonlychests.commands.StructuresCommand;
@@ -36,6 +37,8 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+
         var databasePath = getDataFolder().toPath().resolve("data").resolve("challenge.db");
         placedBlockRepository = new PlacedBlockRepository(databasePath);
         challengeStateRepository = new ChallengeStateRepository(databasePath);
@@ -65,10 +68,13 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
                 this
         );
         getServer().getPluginManager().registerEvents(new FishingDropListener(), this);
+        ElytraDropCommand elytraDropCommand = new ElytraDropCommand(this);
+
         getServer().getPluginManager().registerEvents(
                 new HangingEntityListener(
                         new NamespacedKey(this, "player_placed_hanging_entity"),
-                        new NamespacedKey(this, "player_placed_item_frame")
+                        new NamespacedKey(this, "player_placed_item_frame"),
+                        elytraDropCommand::isEnabled
                 ),
                 this
         );
@@ -138,6 +144,9 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
         );
         getCommand("reset").setExecutor(resetCommand);
         getCommand("reset").setTabCompleter(resetCommand);
+
+        getCommand("elytradrop").setExecutor(elytraDropCommand);
+        getCommand("elytradrop").setTabCompleter(elytraDropCommand);
 
         getServer().getPluginManager().registerEvents(challengeSidebar, this);
         getCommand("chesthud").setExecutor(challengeSidebar);
