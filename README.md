@@ -47,6 +47,9 @@ wurde für aktuelle Minecraft-Versionen jedoch eigenständig neu umgesetzt.
 - Alle unterschiedlichen Zielgegenstände werden dauerhaft gespeichert.
 - Natürlich generierte Blöcke und geschützte Container erzeugen beim Abbau
   keinen Loot.
+- Leere, natürlich generierte Fischer-Fässer dürfen während der aktiven
+  Dorf-Kategorie geöffnet werden. Da Vanilla ihnen keine Loot-Tabelle gibt,
+  zählen sie nicht als besuchte Kiste und erzeugen keinen Fortschritt.
 - Selbst platzierte Blöcke, Container, Bilderrahmen und vergleichbare Objekte
   funktionieren nach Vanilla-Regeln.
 - Gewöhnliche Kreaturen geben weiterhin Erfahrung, aber keine Gegenstände.

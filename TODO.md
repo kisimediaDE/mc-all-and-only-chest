@@ -118,6 +118,14 @@ Stand: 28. Juli 2026
 
 ## Container- und Persistenz-Edge-Cases
 
+- [x] natürliches Fischer-Fass im Ebenendorf während aktiver Dorf-Kategorie
+  öffnen; leer, kein Kisten- oder Itemfortschritt
+- [x] übrige Dorfvarianten benötigen keinen separaten manuellen Test: Wüste,
+  Savanne, Schnee und Taiga verwenden denselben zentralen Erkennungspfad
+- [x] natürliches Fischer-Fass bei abgeschlossener Challenge und ohne aktive
+  Kategorie bleibt gesperrt
+- [ ] natürliches Fischer-Fass bei einer anderen aktiven Kategorie bleibt
+  gesperrt
 - [x] Doppelkisten als genau eine besuchte Kiste testen.
   - [x] Loot aus beiden Hälften wird gemeinsam erkannt
   - [x] beide Hälften zählen zusammen als genau eine Quelle

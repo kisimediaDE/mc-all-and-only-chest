@@ -14,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
+import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.BrewingStand;
@@ -36,6 +37,8 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.LootGenerateEvent;
+import org.bukkit.generator.structure.GeneratedStructure;
+import org.bukkit.generator.structure.Structure;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -50,6 +53,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,6 +64,14 @@ import java.util.logging.Logger;
  * Paper's dispense-loot event, matching the original plugin's behavior.
  */
 public final class StructureLootListener implements Listener {
+
+    private static final Set<Structure> VILLAGE_STRUCTURES = Set.of(
+            Structure.VILLAGE_DESERT,
+            Structure.VILLAGE_PLAINS,
+            Structure.VILLAGE_SAVANNA,
+            Structure.VILLAGE_SNOWY,
+            Structure.VILLAGE_TAIGA
+    );
 
     private final Plugin plugin;
     private final ChallengeStateRepository stateRepository;
@@ -151,6 +163,17 @@ public final class StructureLootListener implements Listener {
             Optional<StructureCategory> category = categoryFor(holder);
             if (category.isEmpty()) {
                 category = categoryFromItems(event.getInventory().getStorageContents());
+            }
+            if (category.isEmpty() && isNaturalVillageBarrel(holder)) {
+                StructureCategory active = stateRepository.activeStructure().orElse(null);
+                if (active != StructureCategory.VILLAGE
+                        || stateRepository.isCompleted(StructureCategory.VILLAGE)) {
+                    event.setCancelled(true);
+                    player.sendMessage(
+                            "§cDieses Fass gehört nicht zu deiner aktuell erlaubten Struktur."
+                    );
+                }
+                return;
             }
             if (category.isEmpty()) {
                 if (holder instanceof Lootable || holder instanceof DoubleChest) {
@@ -381,6 +404,34 @@ public final class StructureLootListener implements Listener {
             }
         }
         return Optional.empty();
+    }
+
+    /**
+     * Fisher cottages in every village biome contain barrels as job-site
+     * blocks. Vanilla does not assign a loot table to these barrels, so they
+     * cannot be classified through {@link Lootable#getLootTable()}. Allow
+     * them while the Village category is active, but deliberately do not
+     * process or count them as loot sources.
+     */
+    private boolean isNaturalVillageBarrel(InventoryHolder holder) {
+        if (!(holder instanceof Barrel barrel)) {
+            return false;
+        }
+
+        Block block = barrel.getBlock();
+        int chunkX = block.getX() >> 4;
+        int chunkZ = block.getZ() >> 4;
+        return block.getWorld().getStructures(chunkX, chunkZ).stream()
+                .filter(this::isVillageStructure)
+                .anyMatch(structure -> structure.getBoundingBox().contains(
+                        block.getX() + 0.5,
+                        block.getY() + 0.5,
+                        block.getZ() + 0.5
+                ));
+    }
+
+    private boolean isVillageStructure(GeneratedStructure structure) {
+        return VILLAGE_STRUCTURES.contains(structure.getStructure());
     }
 
     private boolean isEntirelyPlayerPlaced(InventoryHolder holder) {
