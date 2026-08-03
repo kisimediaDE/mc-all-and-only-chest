@@ -80,7 +80,8 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
         );
         getServer().getPluginManager().registerEvents(
                 new MobDropListener(
-                        new NamespacedKey(this, "player_placed_container_entity")
+                        new NamespacedKey(this, "player_placed_container_entity"),
+                        new NamespacedKey(this, "player_placed_vehicle")
                 ),
                 this
         );

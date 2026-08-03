@@ -1,6 +1,6 @@
 # All and Only Chests – Arbeitsliste
 
-Stand: 28. Juli 2026
+Stand: 3. August 2026
 
 ## Automatisierte Tests
 
@@ -97,6 +97,10 @@ Stand: 28. Juli 2026
   - [x] von lebenden Entities fallengelassene Gegenstände
     - [x] natürlich gelegtes Hühnerei wird verhindert
     - [x] vom Spieler fallengelassenes Ei bleibt normal aufhebbar
+  - [x] selbst hergestellte Boote
+    - [x] vom Spieler platziertes Boot wird dauerhaft markiert
+    - [x] Markierung bleibt nach Serverneustart erhalten
+    - [x] Boot droppt beim Abbau im Überlebensmodus und ist aufhebbar
   - [x] natürliche gemeißelte Bücherregale
     - [x] Einlegen und Entnehmen werden mit verständlicher Meldung gesperrt
     - [x] Abbau ohne und mit Behutsamkeit erzeugt keinen Drop
