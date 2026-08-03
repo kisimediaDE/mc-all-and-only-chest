@@ -31,10 +31,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockDispenseLootEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityPlaceEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.generator.structure.GeneratedStructure;
@@ -80,6 +82,7 @@ public final class StructureLootListener implements Listener {
     private final ChallengeSidebar sidebar;
     private final NamespacedKey structureCategoryKey;
     private final NamespacedKey playerPlacedContainerEntityKey;
+    private final StructureItemTagSanitizer itemTagSanitizer;
     private final Logger logger;
 
     public StructureLootListener(
@@ -99,6 +102,7 @@ public final class StructureLootListener implements Listener {
         structureCategoryKey = new NamespacedKey(plugin, "structure_category");
         playerPlacedContainerEntityKey =
                 new NamespacedKey(plugin, "player_placed_container_entity");
+        itemTagSanitizer = new StructureItemTagSanitizer(structureCategoryKey);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -118,7 +122,9 @@ public final class StructureLootListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onLootGenerate(LootGenerateEvent event) {
-        if (event.getInventoryHolder() instanceof Dispenser
+        if (event.isPlugin()
+                || event.getInventoryHolder() == null
+                || event.getInventoryHolder() instanceof Dispenser
                 || event.getInventoryHolder() instanceof DecoratedPot) {
             return;
         }
@@ -135,6 +141,7 @@ public final class StructureLootListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInventoryOpen(InventoryOpenEvent event) {
         if (event.getInventory().getType() == InventoryType.ENDER_CHEST) {
+            itemTagSanitizer.removeFrom(event.getInventory());
             return;
         }
 
@@ -145,6 +152,7 @@ public final class StructureLootListener implements Listener {
 
         try {
             if (isEntirelyPlayerPlaced(holder)) {
+                itemTagSanitizer.removeFrom(event.getInventory());
                 return;
             }
             if (holder instanceof Hopper || holder instanceof HopperMinecart) {
@@ -161,9 +169,6 @@ public final class StructureLootListener implements Listener {
             }
 
             Optional<StructureCategory> category = categoryFor(holder);
-            if (category.isEmpty()) {
-                category = categoryFromItems(event.getInventory().getStorageContents());
-            }
             if (category.isEmpty() && isNaturalVillageBarrel(holder)) {
                 StructureCategory active = stateRepository.activeStructure().orElse(null);
                 if (active != StructureCategory.VILLAGE
@@ -172,8 +177,13 @@ public final class StructureLootListener implements Listener {
                     player.sendMessage(
                             "§cDieses Fass gehört nicht zu deiner aktuell erlaubten Struktur."
                     );
+                } else {
+                    itemTagSanitizer.removeFrom(event.getInventory());
                 }
                 return;
+            }
+            if (category.isEmpty()) {
+                category = categoryFromItems(event.getInventory().getStorageContents());
             }
             if (category.isEmpty()) {
                 if (holder instanceof Lootable || holder instanceof DoubleChest) {
@@ -193,6 +203,7 @@ public final class StructureLootListener implements Listener {
                 return;
             }
 
+            boolean categoryPersisted = persistHolderCategory(holder, resolvedCategory);
             sourceKey(holder).ifPresent(key ->
                     stateRepository.recordVisitedSource(resolvedCategory, key)
             );
@@ -200,6 +211,9 @@ public final class StructureLootListener implements Listener {
                     resolvedCategory,
                     Arrays.asList(event.getInventory().getStorageContents())
             );
+            if (categoryPersisted) {
+                itemTagSanitizer.removeFrom(event.getInventory());
+            }
             sidebar.refreshAll();
         } catch (RuntimeException exception) {
             event.setCancelled(true);
@@ -257,13 +271,36 @@ public final class StructureLootListener implements Listener {
     public void onInventoryMove(InventoryMoveItemEvent event) {
         Inventory source = event.getSource();
         InventoryHolder holder = source.getHolder();
-        if (holder != null
-                && !isEntirelyPlayerPlaced(holder)
-                && (holder instanceof Hopper
-                || holder instanceof HopperMinecart
-                || categoryFor(holder).isPresent()
-                || categoryFromItems(source.getStorageContents()).isPresent())) {
+        if (holder == null || isEntirelyPlayerPlaced(holder)) {
+            return;
+        }
+        if (holder instanceof Hopper || holder instanceof HopperMinecart) {
             event.setCancelled(true);
+            return;
+        }
+
+        Optional<StructureCategory> category = categoryFor(holder);
+        if (category.isEmpty()) {
+            category = categoryFromItems(source.getStorageContents());
+        }
+        if (category.isPresent()) {
+            event.setCancelled(true);
+            if (persistHolderCategory(holder, category.get())) {
+                itemTagSanitizer.removeFrom(source);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        itemTagSanitizer.removeFrom(event.getPlayer().getInventory());
+        itemTagSanitizer.removeFrom(event.getPlayer().getEnderChest());
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPlayerPickupItem(EntityPickupItemEvent event) {
+        if (event.getEntity() instanceof Player) {
+            itemTagSanitizer.removeFrom(event.getItem().getItemStack());
         }
     }
 
@@ -375,6 +412,55 @@ public final class StructureLootListener implements Listener {
                 }
             });
         }
+    }
+
+    /**
+     * Persists the category before legacy item tags are removed. LootGenerateEvent
+     * exposes a block-state snapshot, so its asynchronous write remains useful;
+     * once the inventory has opened, updating the current state is safe and makes
+     * the container itself the durable source of truth.
+     */
+    private boolean persistHolderCategory(
+            InventoryHolder holder,
+            StructureCategory category
+    ) {
+        if (holder instanceof DoubleChest doubleChest) {
+            boolean foundNaturalSide = false;
+            boolean persisted = true;
+            for (InventoryHolder side : List.of(
+                    doubleChest.getLeftSide(),
+                    doubleChest.getRightSide()
+            )) {
+                if (isEntirelyPlayerPlaced(side)) {
+                    continue;
+                }
+                foundNaturalSide = true;
+                persisted &= persistHolderCategory(side, category);
+            }
+            return foundNaturalSide && persisted;
+        }
+
+        if (holder instanceof BlockState blockState) {
+            if (!(blockState.getBlock().getState() instanceof TileState currentState)) {
+                return false;
+            }
+            currentState.getPersistentDataContainer().set(
+                    structureCategoryKey,
+                    PersistentDataType.STRING,
+                    category.id()
+            );
+            return currentState.update(true, false);
+        }
+
+        if (holder instanceof PersistentDataHolder dataHolder) {
+            dataHolder.getPersistentDataContainer().set(
+                    structureCategoryKey,
+                    PersistentDataType.STRING,
+                    category.id()
+            );
+            return true;
+        }
+        return false;
     }
 
     private void tagItem(ItemStack item, StructureCategory category) {
