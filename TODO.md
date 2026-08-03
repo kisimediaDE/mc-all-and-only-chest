@@ -94,6 +94,12 @@ Stand: 3. August 2026
     - [x] natürliche Blätter technisch auf Verfall ohne Drops umgestellt
     - [x] im Spiel geprüft: Blätter verschwinden, aber Setzlinge, Stöcke und
           Äpfel werden nicht fallengelassen
+  - [x] durch Wasser zerstörte Vegetation
+    - [x] natürliche Dorf-Feldfrüchte verschwinden ohne Samen, Weizen,
+          Karotten oder Kartoffeln
+    - [x] natürliches Gras, Blumen und Laubhaufen verschwinden ohne Drops
+    - [x] selbst angepflanzter Weizen folgt weiterhin den Player-Placed-Regeln
+          und droppt normal
   - [x] von lebenden Entities fallengelassene Gegenstände
     - [x] natürlich gelegtes Hühnerei wird verhindert
     - [x] vom Spieler fallengelassenes Ei bleibt normal aufhebbar
