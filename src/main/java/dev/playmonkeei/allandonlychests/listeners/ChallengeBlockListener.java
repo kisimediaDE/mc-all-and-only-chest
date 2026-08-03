@@ -24,6 +24,7 @@ import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.TNTPrimeEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.inventory.EquipmentSlot;
@@ -100,6 +101,19 @@ public final class ChallengeBlockListener implements Listener {
                 .map(BlockPosition::from)
                 .toList();
         persistPlacement(event, positions);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onStructureGrow(StructureGrowEvent event) {
+        try {
+            repository.untrackAll(event.getBlocks().stream()
+                    .map(BlockState::getBlock)
+                    .map(BlockPosition::from)
+                    .toList());
+        } catch (RuntimeException exception) {
+            event.setCancelled(true);
+            logger.log(Level.SEVERE, "Cancelled structure growth after a storage failure", exception);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

@@ -100,6 +100,11 @@ Stand: 3. August 2026
     - [x] natürliches Gras, Blumen und Laubhaufen verschwinden ohne Drops
     - [x] selbst angepflanzter Weizen folgt weiterhin den Player-Placed-Regeln
           und droppt normal
+  - [x] selbst gepflanzte Bäume
+    - [x] Baumwachstum entfernt die Player-Placed-Markierungen der ersetzten
+          Setzlingspositionen
+    - [x] unterster Stammblock und restlicher gewachsener Baum erzeugen beim
+          Abbau keine Drops
   - [x] von lebenden Entities fallengelassene Gegenstände
     - [x] natürlich gelegtes Hühnerei wird verhindert
     - [x] vom Spieler fallengelassenes Ei bleibt normal aufhebbar

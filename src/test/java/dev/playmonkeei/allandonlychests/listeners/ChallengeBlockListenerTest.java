@@ -5,13 +5,17 @@ import dev.playmonkeei.allandonlychests.storage.PlacedBlockRepository;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.event.world.StructureGrowEvent;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import java.util.UUID;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static org.mockito.Mockito.mock;
@@ -27,6 +31,27 @@ class ChallengeBlockListenerTest {
             repository,
             mock(Logger.class)
     );
+
+    @Test
+    void removesPlayerPlacedMarkersReplacedByGrowingTree() {
+        Block firstSaplingPosition = blockAt(Material.OAK_LOG, 11, 64, -8);
+        Block secondSaplingPosition = blockAt(Material.OAK_LOG, 12, 64, -8);
+        BlockState firstState = mock(BlockState.class);
+        BlockState secondState = mock(BlockState.class);
+        when(firstState.getBlock()).thenReturn(firstSaplingPosition);
+        when(secondState.getBlock()).thenReturn(secondSaplingPosition);
+
+        StructureGrowEvent event = mock(StructureGrowEvent.class);
+        when(event.getBlocks()).thenReturn(List.of(firstState, secondState));
+
+        listener.onStructureGrow(event);
+
+        verify(repository).untrackAll(List.of(
+                BlockPosition.from(firstSaplingPosition),
+                BlockPosition.from(secondSaplingPosition)
+        ));
+        verify(event, never()).setCancelled(true);
+    }
 
     @ParameterizedTest
     @EnumSource(value = Material.class, names = {
@@ -124,15 +149,19 @@ class ChallengeBlockListenerTest {
     }
 
     private Block blockAt(Material material) {
+        return blockAt(material, 11, 64, -8);
+    }
+
+    private Block blockAt(Material material, int x, int y, int z) {
         World world = mock(World.class);
         when(world.getUID()).thenReturn(UUID.fromString("0e94f6a5-21df-4d58-b929-024b2b3b2971"));
 
         Block block = mock(Block.class);
         when(block.getType()).thenReturn(material);
         when(block.getWorld()).thenReturn(world);
-        when(block.getX()).thenReturn(11);
-        when(block.getY()).thenReturn(64);
-        when(block.getZ()).thenReturn(-8);
+        when(block.getX()).thenReturn(x);
+        when(block.getY()).thenReturn(y);
+        when(block.getZ()).thenReturn(z);
         return block;
     }
 }
