@@ -1,5 +1,7 @@
 package dev.playmonkeei.allandonlychests;
 
+import dev.playmonkeei.allandonlychests.challenge.StructureCategory;
+import dev.playmonkeei.allandonlychests.challenge.StructureGoal;
 import dev.playmonkeei.allandonlychests.challenge.StructureGoalCatalog;
 import dev.playmonkeei.allandonlychests.commands.ElytraDropCommand;
 import dev.playmonkeei.allandonlychests.commands.StructureCompleteCommand;
@@ -25,6 +27,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Entry point for the All and Only Chests challenge plugin.
  */
@@ -47,6 +53,23 @@ public final class AllAndOnlyChestsPlugin extends JavaPlugin {
             structureGoalCatalog = StructureGoalCatalog.load(this, getLogger());
             placedBlockRepository.open();
             challengeStateRepository.open();
+            Map<StructureCategory, List<StructureGoal>> currentGoals =
+                    new EnumMap<>(StructureCategory.class);
+            for (StructureCategory category : StructureCategory.values()) {
+                currentGoals.put(category, structureGoalCatalog.goalsFor(category));
+            }
+            ChallengeStateRepository.ProgressReconciliation reconciliation =
+                    challengeStateRepository.reconcileProgress(currentGoals);
+            if (reconciliation.removedGoalCount() > 0
+                    || !reconciliation.completedStructures().isEmpty()) {
+                getLogger().info(
+                        "Reconciled persisted structure progress: removed "
+                                + reconciliation.removedGoalCount()
+                                + " unavailable goal(s), completed "
+                                + reconciliation.completedStructures().size()
+                                + " structure(s)."
+                );
+            }
             challengeSidebar = new ChallengeSidebar(
                     challengeStateRepository,
                     structureGoalCatalog

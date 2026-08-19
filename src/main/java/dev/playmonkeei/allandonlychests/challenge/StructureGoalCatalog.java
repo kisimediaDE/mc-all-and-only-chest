@@ -319,7 +319,7 @@ public final class StructureGoalCatalog {
             case SHIPWRECK -> 36;
             case STRONGHOLD -> 27;
             case MINESHAFT -> musicDiscBounceAvailable ? 22 : 21;
-            case VILLAGE -> 89;
+            case VILLAGE -> 83;
             case WOODLAND_MANSION -> 25;
             case MONSTER_ROOM -> 26;
             case BASTION_REMNANT -> 66;

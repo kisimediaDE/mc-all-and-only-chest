@@ -67,7 +67,7 @@ Spawner reward tables used by Trial Chambers.
 | Shipwreck | 36 |
 | Stronghold | 27 |
 | Mineshaft | 22 |
-| Village | 89 |
+| Village | 83 |
 | Woodland Mansion | 25 |
 | Monster Room | 26 |
 | Bastion Remnant | 66 |
@@ -76,6 +76,19 @@ Spawner reward tables used by Trial Chambers.
 The 26.1.2 and 26.2 semantic sets are identical except for
 `music_disc_bounce`, which is a 26.2 Mineshaft goal. Unavailable materials are
 filtered when the catalog is loaded, so the 26.1 Mineshaft has 21 goals.
+
+The Village catalog excludes the six items unique to
+`village/village_shepherd`: White, Black, Gray, Brown, and Light Gray Wool,
+plus Shears. Due to [MC-170550](https://bugs.mojang.com/browse/MC-170550),
+`snowy_shepherds_house_1` cannot attach to a naturally generated snowy village;
+it is the only Vanilla village template containing a Shepherd loot chest.
+Emeralds and Wheat remain goals because reachable village loot tables also
+contain them.
+
+On startup, persisted goal keys are reconciled with the catalog available in
+the running Minecraft version. Regular Village progress remains unchanged;
+obsolete keys are removed from counters, and a category that already contains
+every remaining goal is completed automatically.
 
 This audit corrected three concrete catalog errors: End City now includes the
 Diamond Pickaxe, Jungle Temple requires an Enchanted Book instead of a normal
@@ -87,6 +100,9 @@ startup assertions also verify every category's expected goal count.
 
 - `spawn_bonus_chest` is a world-start option, not a structure.
 - Ocean Monuments and Swamp Huts have no Vanilla structure chest loot table.
+- `village/village_shepherd` remains classified as Village loot so worlds with
+  a world-generation fix remain compatible. Its six exclusive items are not
+  challenge goals while MC-170550 affects the supported Vanilla releases.
 - Copper Chests introduced after 1.21.4 have block loot tables. They are
   craftable/gameplay containers and are not generated structure categories.
 - The ten new 26.2 templates under

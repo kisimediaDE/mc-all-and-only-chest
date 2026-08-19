@@ -8,8 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -239,6 +243,118 @@ class ChallengeStateRepositoryTest {
         }
     }
 
+    @Test
+    void catalogReductionKeepsRegularProgressAndRemovesObsoleteGoals() {
+        Path database = temporaryDirectory.resolve("challenge.db");
+        StructureGoal emerald = goal("emerald");
+        StructureGoal apple = goal("apple");
+        StructureGoal obsoleteWool = goal("white_wool");
+
+        try (ChallengeStateRepository repository = open(database)) {
+            repository.selectStructure(StructureCategory.VILLAGE);
+            repository.recordFoundGoals(
+                    StructureCategory.VILLAGE,
+                    List.of(emerald, obsoleteWool),
+                    List.of(emerald, apple, obsoleteWool)
+            );
+        }
+
+        try (ChallengeStateRepository repository = open(database)) {
+            ChallengeStateRepository.ProgressReconciliation reconciliation =
+                    repository.reconcileProgress(catalogWithVillageGoals(emerald, apple));
+
+            assertEquals(1, reconciliation.removedGoalCount());
+            assertTrue(reconciliation.completedStructures().isEmpty());
+            assertFalse(reconciliation.challengeCompleted());
+            assertEquals(1, repository.foundCount(StructureCategory.VILLAGE));
+            assertTrue(repository.isFound(StructureCategory.VILLAGE, "emerald"));
+            assertFalse(repository.isFound(StructureCategory.VILLAGE, "white_wool"));
+            assertEquals(
+                    StructureCategory.VILLAGE,
+                    repository.activeStructure().orElseThrow()
+            );
+        }
+
+        try (ChallengeStateRepository repository = open(database)) {
+            assertEquals(1, repository.foundCount(StructureCategory.VILLAGE));
+            assertFalse(repository.isFound(StructureCategory.VILLAGE, "white_wool"));
+        }
+    }
+
+    @Test
+    void catalogReconciliationKeepsFourteenRegularVillageGoalsUnchanged() {
+        Path database = temporaryDirectory.resolve("challenge.db");
+        List<StructureGoal> foundGoals = IntStream.rangeClosed(1, 14)
+                .mapToObj(index -> goal("regular_goal_" + index))
+                .toList();
+        List<StructureGoal> currentGoals = IntStream.rangeClosed(1, 15)
+                .mapToObj(index -> goal("regular_goal_" + index))
+                .toList();
+
+        try (ChallengeStateRepository repository = open(database)) {
+            repository.selectStructure(StructureCategory.VILLAGE);
+            repository.recordFoundGoals(
+                    StructureCategory.VILLAGE,
+                    foundGoals,
+                    currentGoals
+            );
+        }
+
+        try (ChallengeStateRepository repository = open(database)) {
+            ChallengeStateRepository.ProgressReconciliation reconciliation =
+                    repository.reconcileProgress(catalogWithVillageGoals(
+                            currentGoals.toArray(StructureGoal[]::new)
+                    ));
+
+            assertEquals(0, reconciliation.removedGoalCount());
+            assertTrue(reconciliation.completedStructures().isEmpty());
+            assertFalse(reconciliation.challengeCompleted());
+            assertEquals(14, repository.foundCount(StructureCategory.VILLAGE));
+            assertFalse(repository.isCompleted(StructureCategory.VILLAGE));
+            assertEquals(
+                    StructureCategory.VILLAGE,
+                    repository.activeStructure().orElseThrow()
+            );
+        }
+    }
+
+    @Test
+    void catalogReductionCompletesStructureFromExistingRegularProgress() {
+        Path database = temporaryDirectory.resolve("challenge.db");
+        StructureGoal emerald = goal("emerald");
+        StructureGoal apple = goal("apple");
+        StructureGoal obsoleteWool = goal("white_wool");
+
+        try (ChallengeStateRepository repository = open(database)) {
+            repository.selectStructure(StructureCategory.VILLAGE);
+            repository.recordFoundGoals(
+                    StructureCategory.VILLAGE,
+                    List.of(emerald, apple),
+                    List.of(emerald, apple, obsoleteWool)
+            );
+        }
+
+        try (ChallengeStateRepository repository = open(database)) {
+            ChallengeStateRepository.ProgressReconciliation reconciliation =
+                    repository.reconcileProgress(catalogWithVillageGoals(emerald, apple));
+
+            assertEquals(0, reconciliation.removedGoalCount());
+            assertEquals(
+                    Set.of(StructureCategory.VILLAGE),
+                    reconciliation.completedStructures()
+            );
+            assertFalse(reconciliation.challengeCompleted());
+            assertTrue(repository.isCompleted(StructureCategory.VILLAGE));
+            assertTrue(repository.activeStructure().isEmpty());
+            assertEquals(2, repository.foundCount(StructureCategory.VILLAGE));
+        }
+
+        try (ChallengeStateRepository repository = open(database)) {
+            assertTrue(repository.isCompleted(StructureCategory.VILLAGE));
+            assertTrue(repository.activeStructure().isEmpty());
+        }
+    }
+
     private ChallengeStateRepository open(Path database) {
         ChallengeStateRepository repository = new ChallengeStateRepository(database);
         repository.open();
@@ -252,5 +368,18 @@ class ChallengeStateRepositoryTest {
                 Component.text(key),
                 item -> false
         );
+    }
+
+    private Map<StructureCategory, List<StructureGoal>> catalogWithVillageGoals(
+            StructureGoal... villageGoals
+    ) {
+        Map<StructureCategory, List<StructureGoal>> catalog =
+                new EnumMap<>(StructureCategory.class);
+        for (StructureCategory category : StructureCategory.values()) {
+            catalog.put(category, category == StructureCategory.VILLAGE
+                    ? List.of(villageGoals)
+                    : List.of(goal(category.id() + "_goal")));
+        }
+        return catalog;
     }
 }

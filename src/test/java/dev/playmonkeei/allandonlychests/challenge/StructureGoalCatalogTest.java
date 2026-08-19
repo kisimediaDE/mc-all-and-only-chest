@@ -56,6 +56,21 @@ class StructureGoalCatalogTest {
     }
 
     @Test
+    void villageExcludesLootUniqueToUnreachableSnowyShepherdHouse() {
+        List<String> configured = configuredGoals(StructureCategory.VILLAGE);
+
+        assertEquals(83, configured.size());
+        assertFalse(configured.contains("black_wool"));
+        assertFalse(configured.contains("brown_wool"));
+        assertFalse(configured.contains("gray_wool"));
+        assertFalse(configured.contains("light_gray_wool"));
+        assertFalse(configured.contains("shears"));
+        assertFalse(configured.contains("white_wool"));
+        assertTrue(configured.contains("emerald"));
+        assertTrue(configured.contains("wheat"));
+    }
+
+    @Test
     void configuredGoalNamesAreUniqueInEveryCategory() {
         for (StructureCategory category : StructureCategory.values()) {
             List<String> configured = configuredGoals(category);
