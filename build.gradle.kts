@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "dev.playmonkeei"
-version = "0.1.0-beta.3"
+version = "0.1.0-beta.4"
 
 repositories {
     maven {
@@ -13,10 +13,10 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:26.2.build.+")
+    compileOnly("io.papermc.paper:paper-api:26.2.build.112-stable")
     implementation("org.xerial:sqlite-jdbc:3.53.2.0")
 
-    testImplementation("io.papermc.paper:paper-api:26.2.build.+")
+    testImplementation("io.papermc.paper:paper-api:26.2.build.112-stable")
     testImplementation(platform("org.junit:junit-bom:5.13.4"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.mockito:mockito-core:5.20.0")

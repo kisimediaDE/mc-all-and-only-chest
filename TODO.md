@@ -1,6 +1,6 @@
 # All and Only Chests – Arbeitsliste
 
-Stand: 3. August 2026
+Stand: 19. August 2026
 
 ## Automatisierte Tests
 
@@ -16,6 +16,11 @@ Stand: 3. August 2026
 - [x] Versionsfilter: Minenstollen hat unter 26.2 22 Ziele und unter 26.1
       ohne `music_disc_bounce` 21 Ziele.
 - [x] doppelte Zielnamen in allen konfigurierten Kategorien ausgeschlossen.
+- [x] Versions-/Katalogmigration gleicht gespeicherte Ziele ab, entfernt nur
+      nicht mehr verfügbare Zielschlüssel und schließt durch eine verkleinerte
+      Liste vollständig gewordene Kategorien automatisch ab.
+  - [x] 14 reguläre Dorffunde bleiben beim Wechsel auf den 83-Ziele-Katalog
+        unverändert erhalten.
 
 ## Offene Prüfungskammer-Nachtests
 

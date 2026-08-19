@@ -333,6 +333,14 @@ Die Datei ist **keine normale Serverkonfiguration** und sollte von
 Endanwendern nicht im JAR verändert werden. Die Listen wurden gegen die
 offiziellen Vanilla-Loot-Tabellen geprüft.
 
+Die Dorf-Kategorie besitzt 83 erreichbare Ziele. Die fünf Wollfarben und die
+Schere aus `village_shepherd` sind ausgenommen, weil die einzige zugehörige
+Truhe durch den Vanilla-Fehler
+[MC-170550](https://bugs.mojang.com/browse/MC-170550) nicht natürlich mit
+`snowy_shepherds_house_1` generiert werden kann. Gespeicherter Fortschritt
+wird beim Pluginstart automatisch mit dem für die laufende Version gültigen
+Katalog abgeglichen.
+
 ## Kompatibilität
 
 | Umgebung                                     | Status                                        |

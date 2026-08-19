@@ -192,6 +192,22 @@ function transformedMaterial(material, functions) {
 
 function expectedConfiguredMaterials(categoryId, officialItems) {
     const result = new Set(officialItems);
+    if (categoryId === "village") {
+        // MC-170550 prevents snowy_shepherds_house_1, the only naturally
+        // generated container using village_shepherd, from attaching to a
+        // snowy village. Keep goals that also occur in reachable village
+        // tables, but exclude the shepherd table's unique items.
+        for (const unreachableItem of [
+            "black_wool",
+            "brown_wool",
+            "gray_wool",
+            "light_gray_wool",
+            "shears",
+            "white_wool"
+        ]) {
+            result.delete(unreachableItem);
+        }
+    }
     if (categoryId === "trial_chambers") {
         result.delete("potion");
         result.delete("tipped_arrow");

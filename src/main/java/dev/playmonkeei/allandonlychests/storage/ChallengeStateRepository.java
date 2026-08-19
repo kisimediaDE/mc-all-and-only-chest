@@ -15,6 +15,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -203,6 +204,149 @@ public final class ChallengeStateRepository implements AutoCloseable {
     public boolean hasWon() {
         requireOpen();
         return challengeWon;
+    }
+
+    /**
+     * Aligns persisted goal keys with the catalog available in the running
+     * Minecraft version. This keeps upgrades and version downgrades from
+     * leaving impossible goals in counters, and completes a structure when a
+     * smaller catalog makes its existing progress sufficient.
+     */
+    public ProgressReconciliation reconcileProgress(
+            Map<StructureCategory, ? extends Collection<StructureGoal>> goalsByCategory
+    ) {
+        requireOpen();
+
+        Map<StructureCategory, Set<String>> validGoalKeys =
+                new EnumMap<>(StructureCategory.class);
+        for (StructureCategory category : StructureCategory.values()) {
+            Collection<StructureGoal> goals = goalsByCategory.get(category);
+            if (goals == null || goals.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Missing current goals for " + category.id()
+                );
+            }
+            validGoalKeys.put(
+                    category,
+                    goals.stream()
+                            .map(StructureGoal::key)
+                            .collect(java.util.stream.Collectors.toUnmodifiableSet())
+            );
+        }
+
+        Map<StructureCategory, Set<String>> obsoleteGoalKeys =
+                new EnumMap<>(StructureCategory.class);
+        Set<StructureCategory> newlyCompleted =
+                EnumSet.noneOf(StructureCategory.class);
+        int removedGoalCount = 0;
+
+        for (StructureCategory category : StructureCategory.values()) {
+            Set<String> currentKeys = validGoalKeys.get(category);
+            Set<String> obsolete = new HashSet<>(foundGoals.get(category));
+            obsolete.removeAll(currentKeys);
+            if (!obsolete.isEmpty()) {
+                obsoleteGoalKeys.put(category, obsolete);
+                removedGoalCount += obsolete.size();
+            }
+
+            if (!completedStructures.contains(category)) {
+                Set<String> retained = new HashSet<>(foundGoals.get(category));
+                retained.retainAll(currentKeys);
+                if (retained.containsAll(currentKeys)) {
+                    newlyCompleted.add(category);
+                }
+            }
+        }
+
+        boolean clearsActive = activeStructure != null
+                && newlyCompleted.contains(activeStructure);
+        boolean completesChallenge = !challengeWon
+                && completedStructures.size() + newlyCompleted.size()
+                == StructureCategory.values().length;
+
+        if (removedGoalCount == 0
+                && newlyCompleted.isEmpty()
+                && !completesChallenge) {
+            return new ProgressReconciliation(0, Set.of(), false);
+        }
+
+        String deleteGoal = """
+                DELETE FROM found_structure_goals
+                WHERE category_id = ? AND goal_key = ?
+                """;
+        String completeStructure = """
+                INSERT OR IGNORE INTO completed_structures (category_id)
+                VALUES (?)
+                """;
+
+        try {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(deleteGoal)) {
+                for (Map.Entry<StructureCategory, Set<String>> entry
+                        : obsoleteGoalKeys.entrySet()) {
+                    for (String goalKey : entry.getValue()) {
+                        statement.setString(1, entry.getKey().id());
+                        statement.setString(2, goalKey);
+                        statement.addBatch();
+                    }
+                }
+                statement.executeBatch();
+            }
+            try (PreparedStatement statement = connection.prepareStatement(completeStructure)) {
+                for (StructureCategory category : newlyCompleted) {
+                    statement.setString(1, category.id());
+                    statement.addBatch();
+                }
+                statement.executeBatch();
+            }
+            if (clearsActive) {
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "DELETE FROM challenge_state WHERE state_key = ?"
+                )) {
+                    statement.setString(1, ACTIVE_STRUCTURE_KEY);
+                    statement.executeUpdate();
+                }
+            }
+            if (completesChallenge) {
+                try (PreparedStatement statement = connection.prepareStatement("""
+                        INSERT INTO challenge_state (state_key, state_value)
+                        VALUES (?, ?)
+                        ON CONFLICT(state_key) DO UPDATE
+                        SET state_value = excluded.state_value
+                        """)) {
+                    statement.setString(1, CHALLENGE_WON_KEY);
+                    statement.setString(2, Boolean.TRUE.toString());
+                    statement.executeUpdate();
+                }
+            }
+            connection.commit();
+
+            for (Map.Entry<StructureCategory, Set<String>> entry
+                    : obsoleteGoalKeys.entrySet()) {
+                foundGoals.get(entry.getKey()).removeAll(entry.getValue());
+            }
+            completedStructures.addAll(newlyCompleted);
+            if (clearsActive) {
+                activeStructure = null;
+                openedSources = 0;
+            }
+            if (completesChallenge) {
+                challengeWon = true;
+            }
+            return new ProgressReconciliation(
+                    removedGoalCount,
+                    Set.copyOf(newlyCompleted),
+                    completesChallenge
+            );
+        } catch (SQLException exception) {
+            rollback();
+            throw new IllegalStateException(
+                    "Failed to reconcile stored structure progress",
+                    exception
+            );
+        } finally {
+            restoreAutoCommit();
+        }
     }
 
     public Optional<String> hudMode(UUID playerId) {
@@ -578,6 +722,13 @@ public final class ChallengeStateRepository implements AutoCloseable {
             boolean challengeCompletedNow,
             int foundCount,
             int totalCount
+    ) {
+    }
+
+    public record ProgressReconciliation(
+            int removedGoalCount,
+            Set<StructureCategory> completedStructures,
+            boolean challengeCompleted
     ) {
     }
 

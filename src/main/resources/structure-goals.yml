@@ -293,11 +293,9 @@ village:
   - beef
   - beetroot_seeds
   - beetroot_soup
-  - black_wool
   - blue_ice
   - book
   - bread
-  - brown_wool
   - bucket
   - bundle
   - cactus
@@ -321,7 +319,6 @@ village:
   - gold_ingot
   - gold_nugget
   - golden_horse_armor
-  - gray_wool
   - green_dye
   - iron_boots
   - iron_chestplate
@@ -341,7 +338,6 @@ village:
   - leather_chestplate
   - leather_helmet
   - leather_leggings
-  - light_gray_wool
   - map
   - mutton
   - oak_sapling
@@ -356,7 +352,6 @@ village:
   - rotten_flesh
   - saddle
   - salmon
-  - shears
   - short_grass
   - smooth_stone
   - snow_block
@@ -373,7 +368,6 @@ village:
   - water_bucket
   - wheat
   - wheat_seeds
-  - white_wool
   - yellow_dye
 woodland_mansion:
   - beetroot_seeds
