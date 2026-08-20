@@ -23,8 +23,9 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.Hopper;
 import org.bukkit.block.TileState;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.HopperMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -67,13 +68,15 @@ import java.util.logging.Logger;
  */
 public final class StructureLootListener implements Listener {
 
-    private static final Set<Structure> VILLAGE_STRUCTURES = Set.of(
-            Structure.VILLAGE_DESERT,
-            Structure.VILLAGE_PLAINS,
-            Structure.VILLAGE_SAVANNA,
-            Structure.VILLAGE_SNOWY,
-            Structure.VILLAGE_TAIGA
-    );
+    private static final class VillageStructures {
+        private static final Set<Structure> TYPES = Set.of(
+                Structure.VILLAGE_DESERT,
+                Structure.VILLAGE_PLAINS,
+                Structure.VILLAGE_SAVANNA,
+                Structure.VILLAGE_SNOWY,
+                Structure.VILLAGE_TAIGA
+        );
+    }
 
     private final Plugin plugin;
     private final ChallengeStateRepository stateRepository;
@@ -140,12 +143,21 @@ public final class StructureLootListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInventoryOpen(InventoryOpenEvent event) {
+        InventoryHolder holder = event.getInventory().getHolder();
+
+        // Horse-family inventories contain equipment supplied by players, not
+        // structure loot. They must remain accessible so saddles, armor and
+        // chest contents can be removed again.
+        if (holder instanceof AbstractHorse && event.getPlayer() instanceof Player) {
+            itemTagSanitizer.removeFrom(event.getInventory());
+            return;
+        }
+
         if (event.getInventory().getType() == InventoryType.ENDER_CHEST) {
             itemTagSanitizer.removeFrom(event.getInventory());
             return;
         }
 
-        InventoryHolder holder = event.getInventory().getHolder();
         if (holder == null || !(event.getPlayer() instanceof Player player)) {
             return;
         }
@@ -517,7 +529,7 @@ public final class StructureLootListener implements Listener {
     }
 
     private boolean isVillageStructure(GeneratedStructure structure) {
-        return VILLAGE_STRUCTURES.contains(structure.getStructure());
+        return VillageStructures.TYPES.contains(structure.getStructure());
     }
 
     private boolean isEntirelyPlayerPlaced(InventoryHolder holder) {
